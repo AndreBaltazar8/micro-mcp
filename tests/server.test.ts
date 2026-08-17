@@ -70,6 +70,21 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       stderr: "",
       json: { args: ["build", "--json"] },
     });
+
+    const commercial = await client.callTool({
+      name: "micro_deploy",
+      arguments: {
+        path: fixture,
+        slug: "paid-example",
+        acceptPriceChanges: true,
+        acceptLiveProducts: true,
+      },
+    });
+    assert.equal(commercial.isError, false);
+    const commercialOutput = commercial.structuredContent as { json?: unknown };
+    assert.deepEqual(commercialOutput.json, {
+      args: ["deploy", "paid-example", "--accept-price-changes", "--accept-live-products", "--json"],
+    });
   } finally {
     await client.close();
   }

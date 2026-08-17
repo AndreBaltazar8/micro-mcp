@@ -158,12 +158,18 @@ export function buildServer(): McpServer {
       inputSchema: directoryInput.extend({
         slug: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/),
         acceptPriceChanges: z.boolean().default(false),
+        acceptLiveProducts: z.boolean().default(false),
       }),
       outputSchema: cliOutput,
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
-    async ({ path, slug, acceptPriceChanges }) =>
-      await invoke(["deploy", slug, ...(acceptPriceChanges ? ["--accept-price-changes"] : []), "--json"], path),
+    async ({ path, slug, acceptPriceChanges, acceptLiveProducts }) =>
+      await invoke([
+        "deploy", slug,
+        ...(acceptPriceChanges ? ["--accept-price-changes"] : []),
+        ...(acceptLiveProducts ? ["--accept-live-products"] : []),
+        "--json",
+      ], path),
   );
 
   server.registerTool(
@@ -331,12 +337,20 @@ export function buildServer(): McpServer {
     {
       title: "Synchronize Micro products",
       description: "Create or update declared products without deleting omitted remote products.",
-      inputSchema: directoryInput.extend({ acceptPriceChanges: z.boolean().default(false) }),
+      inputSchema: directoryInput.extend({
+        acceptPriceChanges: z.boolean().default(false),
+        acceptLiveProducts: z.boolean().default(false),
+      }),
       outputSchema: cliOutput,
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     },
-    async ({ path, acceptPriceChanges }) =>
-      await invoke(["products", "sync", ...(acceptPriceChanges ? ["--accept-price-changes"] : []), "--json"], path),
+    async ({ path, acceptPriceChanges, acceptLiveProducts }) =>
+      await invoke([
+        "products", "sync",
+        ...(acceptPriceChanges ? ["--accept-price-changes"] : []),
+        ...(acceptLiveProducts ? ["--accept-live-products"] : []),
+        "--json",
+      ], path),
   );
 
   server.registerTool(

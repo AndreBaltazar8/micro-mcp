@@ -41,3 +41,8 @@ OIDC assertions, or permanent deployment tokens. The GitHub Action performs its
 own OIDC exchange; do not pass workflow identity through an MCP call. When a
 secure owner interaction is required, stop the MCP workflow and use interactive
 CLI/browser handoff.
+
+`acceptPriceChanges` and `acceptLiveProducts` are separate commercial
+confirmations on deploy and product sync tools. Set `acceptLiveProducts` only
+after the owner has explicitly reviewed that the affected product will create
+real Stripe charges.
