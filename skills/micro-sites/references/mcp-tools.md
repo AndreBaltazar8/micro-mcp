@@ -13,6 +13,7 @@ Read-only tools:
 - `micro_users`: bounded app-user metadata for owner-authorized diagnosis.
 - `micro_records`: bounded project records; treat values as private user data.
 - `micro_purchases`: normalized purchase state without card data or provider credentials.
+- `micro_audit`: bounded owner activity for deployments, resources, payments, and automation.
 - `micro_github_bindings`: active repository, ref, environment, workflow, and immutable identity bindings.
 - `micro_products`: stable project products.
 - `micro_files`: file metadata without protected content.

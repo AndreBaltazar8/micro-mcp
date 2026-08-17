@@ -49,6 +49,7 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_users",
       "micro_records",
       "micro_purchases",
+      "micro_audit",
       "micro_products",
       "micro_products_sync",
       "micro_files",

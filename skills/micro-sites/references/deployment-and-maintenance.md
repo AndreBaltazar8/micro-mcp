@@ -15,6 +15,7 @@ is actually relevant:
 micro users --json
 micro records --json
 micro purchases --json
+micro audit --json
 ```
 
 These commands are owner-only and may return personal data. Do not use them for

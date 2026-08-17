@@ -321,6 +321,18 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_audit",
+    {
+      title: "Inspect Micro owner activity",
+      description: "Read the latest bounded owner audit events for the linked project without exposing credentials.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["audit", "--json"], path),
+  );
+
+  server.registerTool(
     "micro_products",
     {
       title: "List Micro products",
