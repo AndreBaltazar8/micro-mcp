@@ -1,0 +1,48 @@
+---
+name: micro-sites
+description: Build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using public assets, Abla WebAssembly server code, app authentication, project data, products, payments, and protected files. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, remote previews, production deployment, rollback, or GitHub deployment automation.
+---
+
+# Micro Sites
+
+Turn a focused site idea into reviewed source and a verified live Micro. Keep generation in the current coding harness; Micro supplies the bounded Wasm runtime and trusted hosted capabilities.
+
+## Load only the relevant references
+
+- Read [project-layout.md](references/project-layout.md) before creating or restructuring source.
+- Read [browser-sdk.md](references/browser-sdk.md) for browser auth, data, checkout, invocation, or downloads.
+- Read [server-sdk.md](references/server-sdk.md) for Abla handlers, SSR, request context, data, purchases, or events.
+- Read [products-and-files.md](references/products-and-files.md) before editing `micro.yaml` or handling digital files.
+- Read [cli-workflow.md](references/cli-workflow.md) for local build, preview, deploy, or secure account handoff.
+- Read [deployment-and-maintenance.md](references/deployment-and-maintenance.md) for updates, logs, usage, conflicts, GitHub automation, or rollback.
+- Read [security-and-quality.md](references/security-and-quality.md) before implementing auth, money, data, files, or production changes.
+- Read [mcp-tools.md](references/mcp-tools.md) before invoking Micro MCP tools.
+- Read [example-workflow.md](references/example-workflow.md) for the complete digital-product sequence.
+
+## Follow the workflow
+
+1. Discover the audience, desired outcome, public pages, authenticated journeys, server actions, records, products, and files. Ask only for missing choices that materially change the result.
+2. Inspect the existing project or scaffold the conventional source tree. Select one closest reviewed example from `AndreBaltazar8/micro-examples`; do not combine several starters.
+3. Write a short implementation lock: page structure, visual direction, static versus `$html` rendering, Wasm routes, SDK calls, platform resources, and acceptance checks.
+4. Implement the smallest complete journey. Keep public files under `public/`, server code in `app.ab`, and optional stable resource definitions in `micro.yaml`.
+5. Run formatting, `micro build`, automated checks, `micro dev`, and real browser review. Exercise every important route, responsive layout, keyboard path, auth state, and failure state.
+6. Run `micro deploy --preview`. Inspect the returned diagnostics and preview; repair the actual failure and repeat the relevant checks.
+7. If owner authentication is required, use hidden interactive CLI input or pause for a secure user handoff. Never request, echo, store, or pass a password through an MCP tool or model-visible argument.
+8. Deploy production only after review. Confirm the live URL, TLS, assets, Wasm routes, auth, records, products, purchases, and protected downloads that apply.
+9. For updates, inspect linked project state and remote revision first. Preserve production data, synchronize resources without deletion, deploy, verify, and use code rollback when needed.
+
+## Non-negotiables
+
+- Never claim a check passed unless it ran and its result was inspected.
+- Never assume a slug is owned before the first validated production deployment succeeds.
+- Never put protected or paid files under `public/`.
+- Never expose owner sessions, app-session cookies, database credentials, provider secrets, payment IDs, storage paths, or deployment tokens to site code.
+- Treat the browser SDK as ergonomic code, not as an authority boundary.
+- Keep project and user scope derived from the runner; never accept tenant identity from browser or guest arguments.
+- Keep `micro.yaml` synchronization non-destructive. Omitted resources are not deletions.
+- Do not connect local development or previews to production data or live payments.
+- Report exact verification evidence and anything still unverified.
+
+## Finish with a verification gate
+
+Confirm source/build diagnostics, local browser behavior, remote preview, production activation, live routes, resource state, and rollback safety as applicable. For a paid digital product, require the whole journey in [example-workflow.md](references/example-workflow.md); a successful landing page alone is incomplete.

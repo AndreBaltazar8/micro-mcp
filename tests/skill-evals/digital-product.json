@@ -1,0 +1,6 @@
+{
+  "name": "digital-product",
+  "prompt": "Build and deploy a Micro that sells and securely delivers a preset pack.",
+  "mustMention": ["protected file", "Stripe", "authoritative purchase", "entitlement", "second deployment"],
+  "mustNotContain": ["file under public", "success redirect proves payment"]
+}

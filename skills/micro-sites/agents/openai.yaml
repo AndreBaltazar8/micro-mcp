@@ -1,0 +1,4 @@
+interface:
+  display_name: "Micro Sites"
+  short_description: "Build, deploy, and maintain Micro sites"
+  default_prompt: "Use $micro-sites to build and deploy a complete Micro site."

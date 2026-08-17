@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "micro": {
+      "command": "npx",
+      "args": ["-y", "@andrebaltazar8/micro-mcp@0.1.0"]
+    }
+  }
+}

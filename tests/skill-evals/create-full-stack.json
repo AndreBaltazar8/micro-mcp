@@ -1,0 +1,6 @@
+{
+  "name": "create-full-stack",
+  "prompt": "Build a Micro where signed-in users save private reading notes, preview it, and prepare production deployment.",
+  "mustMention": ["implementation lock", "micro build", "deploy --preview", "secure owner handoff", "live verification"],
+  "mustNotContain": ["password argument", "production data in preview"]
+}

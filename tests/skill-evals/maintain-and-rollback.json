@@ -1,0 +1,6 @@
+{
+  "name": "maintain-and-rollback",
+  "prompt": "Diagnose an error in my deployed Micro, ship a fix, and preserve user records if rollback is needed.",
+  "mustMention": ["status", "bounded logs", "base revision", "preview", "rollback changes code only"],
+  "mustNotContain": ["delete records", "print credentials"]
+}
