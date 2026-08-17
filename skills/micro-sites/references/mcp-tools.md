@@ -10,6 +10,9 @@ Read-only tools:
 - `micro_logs`: bounded recent project logs.
 - `micro_dev_status`: bounded status and logs for the MCP-managed local runner.
 - `micro_deployments`: immutable deployment history.
+- `micro_users`: bounded app-user metadata for owner-authorized diagnosis.
+- `micro_records`: bounded project records; treat values as private user data.
+- `micro_purchases`: normalized purchase state without card data or provider credentials.
 - `micro_github_bindings`: active repository, ref, environment, workflow, and immutable identity bindings.
 - `micro_products`: stable project products.
 - `micro_files`: file metadata without protected content.
@@ -28,6 +31,10 @@ Mutating tools:
 - `micro_rollback`: activate a prior code deployment without mutating persistent project state.
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
+
+User, record, and purchase results can contain personal or customer data. Read
+them only for a concrete owner-authorized maintenance task, minimize what enters
+the harness context, and never copy full datasets into a report.
 
 No tool accepts passwords, refresh tokens, provider keys, raw sessions, GitHub
 OIDC assertions, or permanent deployment tokens. The GitHub Action performs its

@@ -8,6 +8,18 @@ micro deployments --json
 micro logs --since 30m --json
 ```
 
+When the issue involves persistent state, inspect only the bounded surface that
+is actually relevant:
+
+```sh
+micro users --json
+micro records --json
+micro purchases --json
+```
+
+These commands are owner-only and may return personal data. Do not use them for
+routine deployment checks or reproduce unrelated records in model output.
+
 Compare local base revision with remote state. If remote source changed, pull and review it; do not overwrite silently. Build, test, preview, deploy, then check the exact live URL and relevant user journey.
 
 Rollback changes code only:

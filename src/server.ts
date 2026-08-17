@@ -279,6 +279,42 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_users",
+    {
+      title: "Inspect Micro app users",
+      description: "Read the latest bounded app-user metadata for the linked owner project. Results can contain personal data; disclose only what the maintenance task requires.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["users", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_records",
+    {
+      title: "Inspect Micro records",
+      description: "Read the latest bounded project records for the linked owner project. Treat values as user data and do not copy them into prompts unless required.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["records", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_purchases",
+    {
+      title: "Inspect Micro purchases",
+      description: "Read the latest bounded normalized purchase ledger for the linked owner project without exposing payment credentials or card data.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["purchases", "--json"], path),
+  );
+
+  server.registerTool(
     "micro_products",
     {
       title: "List Micro products",
