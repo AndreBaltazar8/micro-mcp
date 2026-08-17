@@ -33,11 +33,20 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
     assert.deepEqual(names, [
       "micro_doctor",
       "micro_build",
+      "micro_dev_start",
+      "micro_dev_status",
+      "micro_dev_stop",
       "micro_preview",
       "micro_deploy",
       "micro_projects",
+      "micro_pull",
       "micro_status",
       "micro_logs",
+      "micro_deployments",
+      "micro_products",
+      "micro_products_sync",
+      "micro_files",
+      "micro_file_upload",
       "micro_rollback",
     ]);
     assert.equal(JSON.stringify(listing).includes("password"), false);
