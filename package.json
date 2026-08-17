@@ -8,7 +8,7 @@
     "micro-mcp": "dist/src/index.js"
   },
   "files": [
-    "dist",
+    "dist/src",
     "skills",
     ".codex-plugin",
     ".mcp.json",
