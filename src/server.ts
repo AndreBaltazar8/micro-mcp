@@ -157,11 +157,58 @@ export function buildServer(): McpServer {
       description: "Build, validate, and atomically create or update a production Micro project.",
       inputSchema: directoryInput.extend({
         slug: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/),
+        acceptPriceChanges: z.boolean().default(false),
       }),
       outputSchema: cliOutput,
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     },
-    async ({ path, slug }) => await invoke(["deploy", slug, "--json"], path),
+    async ({ path, slug, acceptPriceChanges }) =>
+      await invoke(["deploy", slug, ...(acceptPriceChanges ? ["--accept-price-changes"] : []), "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_github_link",
+    {
+      title: "Authorize GitHub deployment",
+      description: "Create an owner-approved OIDC binding and write the non-secret micro.github.json project identity file.",
+      inputSchema: directoryInput.extend({
+        repository: z.string().regex(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/),
+        environment: z.string().regex(/^[A-Za-z0-9_. -]{0,255}$/).default("production"),
+        ref: z.string().regex(/^refs\/(heads|tags)\/.+$/),
+        slug: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, repository, environment, ref, slug }) =>
+      await invoke([
+        "github", "link", "--repository", repository, "--environment", environment,
+        "--ref", ref, "--slug", slug, "--json",
+      ], path),
+  );
+
+  server.registerTool(
+    "micro_github_bindings",
+    {
+      title: "List GitHub deployment bindings",
+      description: "List active repository, ref, environment, workflow, and immutable identity bindings.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["github", "bindings", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_github_revoke",
+    {
+      title: "Revoke GitHub deployment binding",
+      description: "Revoke one explicit GitHub deployment binding and invalidate its outstanding deployment tokens.",
+      inputSchema: z.object({ binding: z.string().uuid() }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ binding }) => await invoke(["github", "revoke", binding, "--json"]),
   );
 
   server.registerTool(

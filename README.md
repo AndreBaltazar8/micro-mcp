@@ -21,6 +21,12 @@ Install the skill directly from this repository, or configure the bundled stdio 
 
 Install a compatible `micro` executable first and authenticate interactively. Set `MICRO_CLI` only when the executable is not on `PATH`; it must be an executable path, never a shell command.
 
+For repository deployment, use `micro_github_link` once from an authenticated
+owner workstation, commit the generated non-secret `micro.github.json`, and
+deploy through the first-party
+[`AndreBaltazar8/micro-action`](https://github.com/AndreBaltazar8/micro-action).
+The Action uses GitHub OIDC; no long-lived Micro credential belongs in GitHub.
+
 ## Develop
 
 ```sh

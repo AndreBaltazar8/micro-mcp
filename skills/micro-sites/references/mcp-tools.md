@@ -10,6 +10,7 @@ Read-only tools:
 - `micro_logs`: bounded recent project logs.
 - `micro_dev_status`: bounded status and logs for the MCP-managed local runner.
 - `micro_deployments`: immutable deployment history.
+- `micro_github_bindings`: active repository, ref, environment, workflow, and immutable identity bindings.
 - `micro_products`: stable project products.
 - `micro_files`: file metadata without protected content.
 
@@ -19,6 +20,8 @@ Mutating tools:
 - `micro_dev_start` / `micro_dev_stop`: manage one loopback-only disposable runner per project.
 - `micro_preview`: upload an opaque remote preview without a slug claim.
 - `micro_deploy`: atomically create/update production code.
+- `micro_github_link`: create an owner-approved OIDC deployment binding and write non-secret `micro.github.json`.
+- `micro_github_revoke`: revoke one explicit binding and invalidate its outstanding deployment tokens.
 - `micro_pull`: materialize a source snapshot and remote base revision locally.
 - `micro_products_sync`: non-destructively synchronize `micro.yaml` products.
 - `micro_file_upload`: upload one explicit public or entitlement-gated object.
@@ -26,4 +29,8 @@ Mutating tools:
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
 
-No tool accepts passwords, refresh tokens, provider keys, raw sessions, or permanent deployment tokens. When a secure owner interaction is required, stop the MCP workflow and use interactive CLI/browser handoff.
+No tool accepts passwords, refresh tokens, provider keys, raw sessions, GitHub
+OIDC assertions, or permanent deployment tokens. The GitHub Action performs its
+own OIDC exchange; do not pass workflow identity through an MCP call. When a
+secure owner interaction is required, stop the MCP workflow and use interactive
+CLI/browser handoff.
