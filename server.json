@@ -12,7 +12,7 @@
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "@andrebaltazar8/micro-mcp",
+      "identifier": "@andrebaltazar/micro-mcp",
       "version": "0.1.0",
       "transport": {
         "type": "stdio"

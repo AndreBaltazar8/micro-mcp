@@ -13,7 +13,7 @@ Install the skill directly from this repository, or configure the bundled stdio 
   "mcpServers": {
     "micro": {
       "command": "npx",
-      "args": ["-y", "@andrebaltazar8/micro-mcp@0.1.0"]
+      "args": ["-y", "@andrebaltazar/micro-mcp@0.1.0"]
     }
   }
 }
