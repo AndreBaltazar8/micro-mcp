@@ -27,6 +27,10 @@ deploy through the first-party
 [`AndreBaltazar8/micro-action`](https://github.com/AndreBaltazar8/micro-action).
 The Action uses GitHub OIDC; no long-lived Micro credential belongs in GitHub.
 
+For destructive project retirement, inspect and export the linked project first,
+then use `micro_project_delete` with its exact slug and `confirm: true`. Track the
+asynchronous cleanup with `micro_project_deletions`; local source is never removed.
+
 ## Develop
 
 ```sh

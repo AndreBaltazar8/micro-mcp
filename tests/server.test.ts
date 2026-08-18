@@ -42,6 +42,8 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_github_bindings",
       "micro_github_revoke",
       "micro_projects",
+      "micro_project_deletions",
+      "micro_project_delete",
       "micro_pull",
       "micro_status",
       "micro_logs",
@@ -66,6 +68,34 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_rollback",
     ]);
     assert.equal(JSON.stringify(listing).includes("password"), false);
+
+    const projectDeletions = await client.callTool({
+      name: "micro_project_deletions",
+      arguments: {},
+    });
+    assert.equal(projectDeletions.isError, false);
+    const projectDeletionsOutput = projectDeletions.structuredContent as { json?: unknown };
+    assert.deepEqual(projectDeletionsOutput.json, {
+      args: ["project", "deletions", "--json"],
+    });
+
+    const projectDeleted = await client.callTool({
+      name: "micro_project_delete",
+      arguments: { path: fixture, slug: "paid-example", confirm: true },
+    });
+    assert.equal(projectDeleted.isError, false);
+    const projectDeletedOutput = projectDeleted.structuredContent as { json?: unknown };
+    assert.deepEqual(projectDeletedOutput.json, {
+      args: [
+        "project", "delete", "--confirm-slug", "paid-example", "--confirm", "--json",
+      ],
+    });
+
+    const projectDeleteUnconfirmed = await client.callTool({
+      name: "micro_project_delete",
+      arguments: { path: fixture, slug: "paid-example", confirm: false },
+    });
+    assert.equal(projectDeleteUnconfirmed.isError, true);
 
     const response = await client.callTool({
       name: "micro_build",

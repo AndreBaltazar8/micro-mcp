@@ -41,6 +41,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Keep project and user scope derived from the runner; never accept tenant identity from browser or guest arguments.
 - Keep `micro.yaml` synchronization non-destructive. Omitted resources are not deletions.
 - Treat retention changes and pruning as destructive owner decisions. Require a fresh preview and explicit confirmation; never retry a changed preview automatically.
+- Treat project deletion as irreversible. Inspect the linked project, export required data, require the exact slug and explicit confirmation, then retain and monitor the durable receipt. Never retry a failed cleanup automatically.
 - Do not connect local development or previews to production data or live payments.
 - Report exact verification evidence and anything still unverified.
 

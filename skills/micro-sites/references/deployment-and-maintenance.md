@@ -72,6 +72,24 @@ changed, inspect again and obtain fresh confirmation—never retry a conflict
 automatically. This policy only removes aged project records; purchases and
 entitlements are always preserved.
 
+Before permanently deleting a project, read its fresh linked status, export
+anything the owner needs, and state that project records, purchases,
+entitlements, deployments, app users, and protected files will all be removed:
+
+```sh
+micro status --json
+micro export --json
+micro project delete --confirm-slug EXACT_LINKED_SLUG --confirm --json
+micro project deletions --json
+```
+
+The confirmed request hides the project from the runner immediately and holds
+the slug for 30 days. Physical protected-object cleanup is asynchronous; keep
+the returned receipt until it reaches `complete`. A `failed` receipt requires
+inspection and fresh owner confirmation before issuing the same exact deletion
+command as a retry. Never retry it automatically. Local source is deliberately
+left untouched.
+
 Compare local base revision with remote state. If remote source changed, pull and review it; do not overwrite silently. Build, test, preview, deploy, then check the exact live URL and relevant user journey.
 
 Rollback changes code only:

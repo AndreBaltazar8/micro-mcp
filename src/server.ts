@@ -230,6 +230,37 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_project_deletions",
+    {
+      title: "List Micro project-deletion receipts",
+      description: "List durable project-deletion progress and failures for the authenticated owner account, including protected-object counts and slug release times.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["project", "deletions", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_project_delete",
+    {
+      title: "Delete a linked Micro project",
+      description: "Permanently delete the exact locally linked project. Hides it from the runner immediately, reserves the slug for 30 days, queues protected-object cleanup, and leaves local source untouched.",
+      inputSchema: directoryInput.extend({
+        slug: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/)
+          .describe("Exact linked slug copied from a fresh micro_status result"),
+        confirm: z.literal(true).describe("Explicit confirmation to permanently delete this project after exporting anything needed"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, slug }) =>
+      await invoke([
+        "project", "delete", "--confirm-slug", slug, "--confirm", "--json",
+      ], path),
+  );
+
+  server.registerTool(
     "micro_pull",
     {
       title: "Pull Micro source",

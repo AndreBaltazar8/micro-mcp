@@ -6,6 +6,7 @@ Read-only tools:
 
 - `micro_doctor`: CLI version and owner account status.
 - `micro_projects`: visible owner projects.
+- `micro_project_deletions`: durable project-deletion receipts, progress, failures, and slug release times.
 - `micro_status`: linked project, resources, usage, and health.
 - `micro_logs`: bounded recent project logs.
 - `micro_dev_status`: bounded status and logs for the MCP-managed local runner.
@@ -39,6 +40,7 @@ Mutating tools:
 - `micro_record_delete`: permanently delete one exact record identity and inspected version; requires `confirm: true` and fails on a version race.
 - `micro_retention_set`: replace the inspected keep-forever or finite record policy; requires `confirm: true`.
 - `micro_retention_prune`: permanently prune the exact previewed aged-record count; requires `confirm: true` and `expectedRecords`.
+- `micro_project_delete`: permanently delete the exact locally linked project; requires the fresh linked slug and `confirm: true`.
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
 
@@ -70,6 +72,14 @@ policies allow 30–3650 days; set `automatic: true` only with explicit approval
 For pruning, pass the fresh `eligible_records` value as `expectedRecords`.
 Never retry a policy/count conflict automatically. Retention cannot prune
 purchases or entitlements.
+
+Before `micro_project_delete`, call `micro_status`, export any required owner
+data, explain that all project-owned data and files will be removed, and pass
+the returned slug exactly. The tool leaves local source intact, hides the remote
+project immediately, and returns an asynchronous durable receipt. Monitor it
+with `micro_project_deletions`. A failed receipt must be inspected and presented
+to the owner; never automatically call the deletion tool again, because the same
+exact call explicitly retries failed cleanup.
 
 No tool accepts passwords, refresh tokens, provider keys, raw sessions, GitHub
 OIDC assertions, or permanent deployment tokens. The GitHub Action performs its
