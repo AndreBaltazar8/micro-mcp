@@ -13,7 +13,7 @@ Install the skill directly from this repository, or configure the bundled stdio 
   "mcpServers": {
     "micro": {
       "command": "npx",
-      "args": ["-y", "@andrebaltazar/micro-mcp@0.4.3"]
+      "args": ["-y", "@microdotdo/micro-mcp@0.4.4"]
     }
   }
 }
@@ -24,7 +24,7 @@ Install a compatible `micro` executable first and authenticate interactively. Se
 For repository deployment, use `micro_github_link` once from an authenticated
 owner workstation, commit the generated non-secret `micro.github.json`, and
 deploy through the first-party
-[`AndreBaltazar8/micro-action`](https://github.com/AndreBaltazar8/micro-action).
+[`microdotdo/micro-action`](https://github.com/microdotdo/micro-action).
 The Action uses GitHub OIDC; no long-lived Micro credential belongs in GitHub.
 
 For destructive project retirement, inspect and export the linked project first,
@@ -61,4 +61,4 @@ npm test
 
 The package uses MCP 2026-07-28 through the stable TypeScript SDK v2 stdio entry and also serves legacy clients through SDK negotiation.
 
-<!-- mcp-name: io.github.AndreBaltazar8/micro-mcp -->
+<!-- mcp-name: io.github.microdotdo/micro-mcp -->

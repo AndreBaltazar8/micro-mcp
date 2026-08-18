@@ -135,7 +135,7 @@ the exact policy facts, not a credential. The binding alone neither creates a
 project nor claims a slug; the first validated Action deployment does both
 atomically.
 
-Use `AndreBaltazar8/micro-action` with `contents: read` and `id-token: write`,
+Use `microdotdo/micro-action` with `contents: read` and `id-token: write`,
 and put the job in the linked GitHub environment. Pin the Action to a full
 commit SHA in production. Do not create a permanent deploy secret: the Action
 exchanges GitHub OIDC for a five-minute, binding-scoped token that can activate

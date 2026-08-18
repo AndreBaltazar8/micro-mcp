@@ -1,13 +1,13 @@
 {
   "name": "micro-mcp",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Build, deploy, and maintain full-stack Micro sites through the official skill and local MCP tools.",
   "author": {
     "name": "Andre Baltazar",
     "url": "https://github.com/AndreBaltazar8"
   },
   "homepage": "https://micro.do",
-  "repository": "https://github.com/AndreBaltazar8/micro-mcp",
+  "repository": "https://github.com/microdotdo/micro-mcp",
   "license": "MIT",
   "keywords": ["micro", "wasm", "abla", "deployment", "mcp"],
   "skills": "./skills/",

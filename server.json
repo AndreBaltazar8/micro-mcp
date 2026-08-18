@@ -1,19 +1,19 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.AndreBaltazar8/micro-mcp",
+  "name": "io.github.microdotdo/micro-mcp",
   "title": "Micro",
   "description": "Build, preview, deploy, inspect, and maintain full-stack Micro sites.",
   "repository": {
-    "url": "https://github.com/AndreBaltazar8/micro-mcp",
+    "url": "https://github.com/microdotdo/micro-mcp",
     "source": "github"
   },
   "websiteUrl": "https://micro.do",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "@andrebaltazar/micro-mcp",
-      "version": "0.4.3",
+      "identifier": "@microdotdo/micro-mcp",
+      "version": "0.4.4",
       "transport": {
         "type": "stdio"
       }
