@@ -27,4 +27,12 @@ confirmation from a general request to deploy.
 
 Reference the stable Micro product ID in site source. Never use Stripe price IDs. Connect Stripe through the owner dashboard or secure CLI handoff; never put provider credentials in source, YAML, environment visible to the harness, or MCP arguments.
 
+Treat the platform ledger as authoritative. A paid purchase activates its
+entitlement; any refund (including a partial refund), open/lost dispute,
+past-due subscription, or cancelled subscription revokes it. A won dispute or
+paid subscription invoice activates it again. Never infer access from a
+Checkout success URL. Provider disconnection stops new checkout but preserves
+history. Creators remain responsible for taxes, invoices, refunds, terms, and
+Stripe compliance; do not claim that Micro is merchant of record or remits tax.
+
 Keep protected files outside `public/`. Upload through the owner CLI/dashboard, record checksums, and verify the resulting stable object ID. Use `Micro.download(fileId)`; never construct backend paths or signed object-store URLs.
