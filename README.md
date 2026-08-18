@@ -6,17 +6,46 @@ Micro does not receive prompts or call a model. The skill runs in the creator's 
 
 ## Install
 
-Install the skill directly from this repository, or configure the bundled stdio server:
+Use the setup for your coding harness. Each command runs the bundled stdio server
+locally and delegates deployment to the authenticated Micro CLI.
+
+### Codex
+
+```sh
+codex mcp add micro -- npx -y @microdotdo/micro-mcp
+codex mcp list
+```
+
+### Claude Code
+
+```sh
+claude mcp add --transport stdio --scope user micro -- npx -y @microdotdo/micro-mcp
+claude mcp list
+```
+
+### Cursor
+
+Save this as `~/.cursor/mcp.json` for a global installation:
 
 ```json
 {
   "mcpServers": {
     "micro": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@microdotdo/micro-mcp@0.4.8"]
+      "args": ["-y", "@microdotdo/micro-mcp"]
     }
   }
 }
+```
+
+### Pi
+
+Pi intentionally does not provide native MCP support. Install the skill bundled
+with this package so Pi can follow the same Micro CLI workflow:
+
+```sh
+pi install npm:@microdotdo/micro-mcp
 ```
 
 Install a compatible `micro` executable first and authenticate interactively. Set `MICRO_CLI` only when the executable is not on `PATH`; it must be an executable path, never a shell command.
@@ -39,7 +68,7 @@ deployments, or local source.
 Project operation tools cover roles and invitations, private visibility,
 custom-domain proof, plan usage, spending caps, and hosted platform billing.
 Durable schedule tools list, configure, manually enqueue, and remove authenticated
-`schedule.triggered` events for the active production Wasm deployment.
+`schedule.triggered` events for the active production deployment.
 The read-only email tool reports owner-authorized quota and delivery state for
 verified-user notifications without exposing message bodies or credentials.
 The public platform-status tool separates a Micro-wide incident from a linked

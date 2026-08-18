@@ -1,6 +1,6 @@
 {
   "name": "micro-mcp",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "Build, deploy, and maintain full-stack Micro sites through the official skill and local MCP tools.",
   "author": {
     "name": "Andre Baltazar",
@@ -9,11 +9,11 @@
   "homepage": "https://micro.do",
   "repository": "https://github.com/microdotdo/micro-mcp",
   "license": "MIT",
-  "keywords": ["micro", "wasm", "abla", "deployment", "mcp"],
+  "keywords": ["micro", "abla", "deployment", "mcp"],
   "skills": "./skills/",
   "interface": {
     "displayName": "Micro",
-    "shortDescription": "Build and deploy full-stack Wasm sites.",
+    "shortDescription": "Build and deploy complete small sites.",
     "longDescription": "Teach Codex how to create, verify, deploy, diagnose, update, and roll back full-stack Micro sites using the public CLI and typed local MCP tools.",
     "developerName": "Andre Baltazar",
     "category": "Developer Tools",

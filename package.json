@@ -1,6 +1,6 @@
 {
   "name": "@microdotdo/micro-mcp",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "mcpName": "io.github.microdotdo/micro-mcp",
   "description": "Official skill and local MCP tools for building and deploying Micro sites",
   "type": "module",
@@ -28,6 +28,17 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microdotdo/micro-mcp.git"
+  },
+  "keywords": [
+    "micro",
+    "mcp",
+    "pi-package",
+    "deployment"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.0.0",
