@@ -72,6 +72,22 @@ changed, inspect again and obtain fresh confirmation—never retry a conflict
 automatically. This policy only removes aged project records; purchases and
 entitlements are always preserved.
 
+Use transactional record backups for an exact record-set recovery point:
+
+```sh
+micro backups --json
+micro backups create --confirm --json
+micro backups restore BACKUP_ID --backup-sha256 BACKUP_SHA --expected-current-sha256 CURRENT_SHA --confirm --json
+micro backups delete BACKUP_ID --sha256 BACKUP_SHA --confirm --json
+```
+
+Inspect `micro backups` immediately before restore or deletion and copy the
+digests exactly. Restore replaces all current records and fails if either the
+backup or current set changed. Never retry that conflict automatically. These
+snapshots do not include users, purchases, entitlements, products, protected
+files, deployments, or local source; describe them as record backups, not full
+project backups.
+
 Before permanently deleting a project, read its fresh linked status, export
 anything the owner needs, and state that project records, purchases,
 entitlements, deployments, app users, and protected files will all be removed:

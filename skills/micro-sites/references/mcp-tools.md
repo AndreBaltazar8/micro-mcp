@@ -13,6 +13,7 @@ Read-only tools:
 - `micro_deployments`: immutable deployment history.
 - `micro_users`: bounded app-user metadata for owner-authorized diagnosis.
 - `micro_records`: bounded project records; treat values as private user data.
+- `micro_backups`: transactional record-only snapshots and the fresh digest of the current record set.
 - `micro_purchases`: normalized purchase state without card data or provider credentials.
 - `micro_audit`: bounded owner activity for deployments, resources, payments, and automation.
 - `micro_export_manifest`: live export resource counts and page limits.
@@ -38,6 +39,9 @@ Mutating tools:
 - `micro_user_enable`: restore sign-in eligibility for one explicit disabled app user.
 - `micro_user_sessions_revoke`: revoke one user's active sessions and private download grants without disabling them; requires `confirm: true`.
 - `micro_record_delete`: permanently delete one exact record identity and inspected version; requires `confirm: true` and fails on a version race.
+- `micro_backup_create`: create one bounded transactional record-only snapshot; requires `confirm: true`.
+- `micro_backup_restore`: replace current records from one exact backup; requires the inspected backup digest, fresh current digest, and `confirm: true`.
+- `micro_backup_delete`: permanently delete one exact backup; requires its inspected digest and `confirm: true`.
 - `micro_retention_set`: replace the inspected keep-forever or finite record policy; requires `confirm: true`.
 - `micro_retention_prune`: permanently prune the exact previewed aged-record count; requires `confirm: true` and `expectedRecords`.
 - `micro_project_delete`: permanently delete the exact locally linked project; requires the fresh linked slug and `confirm: true`.
@@ -58,6 +62,15 @@ identity field plus the returned version to `micro_record_delete`. Never retry a
 version conflict automatically: inspect the changed value and ask for fresh
 confirmation. Record deletion is permanent and does not cascade to the owning
 app user.
+
+Read `micro_backups` immediately before any backup mutation. Creating a backup
+captures at most 10,000 records and 32 MiB of JSON transactionally. Restoring
+requires the selected `backup_id`, its `sha256`, and the fresh `current.sha256`;
+it replaces the entire current record set. Deleting requires the same inspected
+backup ID and digest. Never retry a digest or concurrency conflict automatically.
+Backups intentionally exclude users, purchases, entitlements, products, files,
+deployments, and local source, so use export and provider/storage recovery for
+those resources instead of claiming a record backup is a full project backup.
 
 Start a data export with `micro_export_manifest`, then request only the required
 pages with `micro_export_page`. Pages are bounded but reflect live state rather

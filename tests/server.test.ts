@@ -54,6 +54,10 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_user_sessions_revoke",
       "micro_records",
       "micro_record_delete",
+      "micro_backups",
+      "micro_backup_create",
+      "micro_backup_restore",
+      "micro_backup_delete",
       "micro_purchases",
       "micro_audit",
       "micro_export_manifest",
@@ -214,6 +218,83 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       },
     });
     assert.equal(recordUnconfirmed.isError, true);
+
+    const backups = await client.callTool({
+      name: "micro_backups",
+      arguments: { path: fixture },
+    });
+    assert.equal(backups.isError, false);
+    const backupsOutput = backups.structuredContent as { json?: unknown };
+    assert.deepEqual(backupsOutput.json, { args: ["backups", "--json"] });
+
+    const backupCreated = await client.callTool({
+      name: "micro_backup_create",
+      arguments: { path: fixture, confirm: true },
+    });
+    assert.equal(backupCreated.isError, false);
+    const backupCreatedOutput = backupCreated.structuredContent as { json?: unknown };
+    assert.deepEqual(backupCreatedOutput.json, {
+      args: ["backups", "create", "--confirm", "--json"],
+    });
+
+    const backupCreateUnconfirmed = await client.callTool({
+      name: "micro_backup_create",
+      arguments: { path: fixture, confirm: false },
+    });
+    assert.equal(backupCreateUnconfirmed.isError, true);
+
+    const backupId = "11111111-1111-4111-8111-111111111111";
+    const backupSha256 = "a".repeat(64);
+    const currentSha256 = "b".repeat(64);
+    const backupRestored = await client.callTool({
+      name: "micro_backup_restore",
+      arguments: {
+        path: fixture,
+        backupId,
+        backupSha256,
+        expectedCurrentSha256: currentSha256,
+        confirm: true,
+      },
+    });
+    assert.equal(backupRestored.isError, false);
+    const backupRestoredOutput = backupRestored.structuredContent as { json?: unknown };
+    assert.deepEqual(backupRestoredOutput.json, {
+      args: [
+        "backups", "restore", backupId, "--backup-sha256", backupSha256,
+        "--expected-current-sha256", currentSha256, "--confirm", "--json",
+      ],
+    });
+
+    const backupRestoreUnconfirmed = await client.callTool({
+      name: "micro_backup_restore",
+      arguments: {
+        path: fixture,
+        backupId,
+        backupSha256,
+        expectedCurrentSha256: currentSha256,
+        confirm: false,
+      },
+    });
+    assert.equal(backupRestoreUnconfirmed.isError, true);
+
+    const backupDeleted = await client.callTool({
+      name: "micro_backup_delete",
+      arguments: { path: fixture, backupId, sha256: backupSha256, confirm: true },
+    });
+    assert.equal(backupDeleted.isError, false);
+    const backupDeletedOutput = backupDeleted.structuredContent as { json?: unknown };
+    assert.deepEqual(backupDeletedOutput.json, {
+      args: [
+        "backups", "delete", backupId, "--sha256", backupSha256,
+        "--confirm", "--json",
+      ],
+    });
+
+    const backupDeleteUnconfirmed = await client.callTool({
+      name: "micro_backup_delete",
+      arguments: { path: fixture, backupId, sha256: backupSha256, confirm: false },
+    });
+    assert.equal(backupDeleteUnconfirmed.isError, true);
 
     const manifest = await client.callTool({
       name: "micro_export_manifest",

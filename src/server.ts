@@ -410,6 +410,72 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_backups",
+    {
+      title: "Inspect Micro record backups",
+      description: "Read bounded transactional project-record backups plus the fresh digest of the current record set. Backups exclude users, purchases, entitlements, products, files, and deployments.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["backups", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_backup_create",
+    {
+      title: "Create a Micro record backup",
+      description: "Create a bounded transactional snapshot of the linked project's records. The snapshot excludes every authoritative identity, payment, entitlement, product, file, and deployment resource.",
+      inputSchema: directoryInput.extend({
+        confirm: z.literal(true).describe("Explicit confirmation to create a bounded record-only snapshot"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["backups", "create", "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_backup_restore",
+    {
+      title: "Restore a Micro record backup",
+      description: "Replace all current project records with one exact inspected backup. Requires both the backup digest and a freshly inspected current-record digest, and never rewinds users, purchases, entitlements, products, files, or deployments.",
+      inputSchema: directoryInput.extend({
+        backupId: z.string().uuid().describe("Exact backup UUID from a fresh micro_backups result"),
+        backupSha256: z.string().regex(/^[0-9a-f]{64}$/).describe("Exact digest of the selected backup"),
+        expectedCurrentSha256: z.string().regex(/^[0-9a-f]{64}$/).describe("Fresh digest of the current record set that may be replaced"),
+        confirm: z.literal(true).describe("Explicit confirmation to replace every current project record with this exact backup"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, backupId, backupSha256, expectedCurrentSha256 }) =>
+      await invoke([
+        "backups", "restore", backupId, "--backup-sha256", backupSha256,
+        "--expected-current-sha256", expectedCurrentSha256, "--confirm", "--json",
+      ], path),
+  );
+
+  server.registerTool(
+    "micro_backup_delete",
+    {
+      title: "Delete a Micro record backup",
+      description: "Permanently delete one exact record-only backup without changing current project data or local source.",
+      inputSchema: directoryInput.extend({
+        backupId: z.string().uuid().describe("Exact backup UUID from a fresh micro_backups result"),
+        sha256: z.string().regex(/^[0-9a-f]{64}$/).describe("Exact digest of the selected backup"),
+        confirm: z.literal(true).describe("Explicit confirmation to permanently delete this exact record backup"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, backupId, sha256 }) =>
+      await invoke([
+        "backups", "delete", backupId, "--sha256", sha256, "--confirm", "--json",
+      ], path),
+  );
+
+  server.registerTool(
     "micro_purchases",
     {
       title: "Inspect Micro purchases",

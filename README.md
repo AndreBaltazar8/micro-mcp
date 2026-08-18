@@ -31,6 +31,11 @@ For destructive project retirement, inspect and export the linked project first,
 then use `micro_project_delete` with its exact slug and `confirm: true`. Track the
 asynchronous cleanup with `micro_project_deletions`; local source is never removed.
 
+For record recovery, inspect `micro_backups` immediately before acting. A restore
+requires the exact backup digest and fresh current-record digest; it replaces
+records only and never rewinds users, purchases, entitlements, products, files,
+deployments, or local source.
+
 ## Develop
 
 ```sh
