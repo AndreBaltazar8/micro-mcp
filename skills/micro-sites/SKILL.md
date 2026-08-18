@@ -1,6 +1,6 @@
 ---
 name: micro-sites
-description: Build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using public assets, Abla WebAssembly server code, app authentication, project data, products, payments, protected files, schedules, verified-user email, and public platform status. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, scheduled work, transactional notifications, incident diagnosis, remote previews, production deployment, rollback, or GitHub deployment automation.
+description: Browse, remix, build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using curated licensed source, public assets, Abla WebAssembly server code, app authentication, project data, products, payments, protected files, schedules, verified-user email, and public platform status. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, gallery starters, scheduled work, transactional notifications, incident diagnosis, remote previews, production deployment, rollback, or GitHub deployment automation.
 ---
 
 # Micro Sites
@@ -10,6 +10,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 ## Load only the relevant references
 
 - Read [project-layout.md](references/project-layout.md) before creating or restructuring source.
+- Read [gallery-and-remix.md](references/gallery-and-remix.md) before selecting or remixing a curated starting point.
 - Read [browser-sdk.md](references/browser-sdk.md) for browser auth, data, checkout, invocation, or downloads.
 - Read [server-sdk.md](references/server-sdk.md) for Abla handlers, SSR, request context, data, purchases, or events.
 - Read [products-and-files.md](references/products-and-files.md) before editing `micro.yaml` or handling digital files.
@@ -26,7 +27,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 ## Follow the workflow
 
 1. Discover the audience, desired outcome, public pages, authenticated journeys, server actions, records, products, and files. Ask only for missing choices that materially change the result.
-2. Inspect the existing project or scaffold the conventional source tree. Select one closest reviewed example from `AndreBaltazar8/micro-examples`; do not combine several starters.
+2. Inspect the existing project, browse the public gallery, or scaffold the conventional source tree. Select one closest reviewed starter; do not combine several. Preserve remix provenance and inspect its license and copy policy before changing source.
 3. Write a short implementation lock: page structure, visual direction, static versus `$html` rendering, Wasm routes, SDK calls, platform resources, and acceptance checks.
 4. Implement the smallest complete journey. Keep public files under `public/`, server code in `app.ab`, and optional stable resource definitions in `micro.yaml`.
 5. Run formatting, `micro build`, automated checks, `micro dev`, and real browser review. Exercise every important route, responsive layout, keyboard path, auth state, and failure state.
@@ -39,6 +40,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 
 - Never claim a check passed unless it ran and its result was inspected.
 - Never assume a slug is owned before the first validated production deployment succeeds.
+- Never describe remix as cloning a project. It creates only a fresh local source tree, removes the source `micro.yaml` slug, and neither creates nor reserves anything remotely.
 - Never put protected or paid files under `public/`.
 - Never expose owner sessions, app-session cookies, database credentials, provider secrets, payment IDs, storage paths, or deployment tokens to site code.
 - Never place an invitation token or private-site bearer token in an MCP argument, model-visible command, log, file, or report. Accept invitations through `--token-stdin`; create private grants only in a secure interactive CLI handoff.

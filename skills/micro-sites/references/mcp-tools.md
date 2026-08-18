@@ -4,6 +4,7 @@ Use typed tools when installed; use the same CLI commands directly otherwise.
 
 Read-only tools:
 
+- `micro_gallery`: public reviewed gallery metadata and immutable source provenance.
 - `micro_doctor`: CLI version and owner account status.
 - `micro_plans`: public plan catalog and allowances.
 - `micro_usage`: authenticated plan, usage, and spending-cap state.
@@ -36,6 +37,7 @@ Read-only tools:
 
 Mutating tools:
 
+- `micro_remix`: restores a licensed snapshot locally with provenance; creates no remote project or slug.
 - `micro_build`: compile, normalize, and validate local source; writes local `.micro/` output only.
 - `micro_dev_start` / `micro_dev_stop`: manage one loopback-only disposable runner per project.
 - `micro_preview`: upload an opaque remote preview without a slug claim.

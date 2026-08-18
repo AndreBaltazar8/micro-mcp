@@ -70,6 +70,8 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_schedule_remove",
       "micro_project_deletions",
       "micro_project_delete",
+      "micro_gallery",
+      "micro_remix",
       "micro_pull",
       "micro_platform_status",
       "micro_status",
@@ -199,6 +201,12 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
     );
     await expectToolArgs("micro_schedules", { path: fixture }, ["schedules", "--json"]);
     await expectToolArgs("micro_emails", { path: fixture }, ["emails", "--json"]);
+    await expectToolArgs("micro_gallery", {}, ["gallery", "--json"]);
+    await expectToolArgs(
+      "micro_remix",
+      { entry: "digital-product", directory: "my-shop", path: fixture },
+      ["remix", "digital-product", "my-shop", "--json"],
+    );
     await expectToolArgs("micro_platform_status", {}, ["platform", "status", "--json"]);
     await expectToolArgs(
       "micro_schedule_run",

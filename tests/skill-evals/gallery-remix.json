@@ -1,0 +1,6 @@
+{
+  "name": "curated-gallery-remix",
+  "prompt": "Start my new paid-download Micro from something close in the gallery.",
+  "mustMention": ["micro_gallery", "micro_remix", ".micro/remix.json", "new slug", "micro dev"],
+  "mustNotContain": ["project was cloned", "reserved the source slug", "copy purchases", "copy provider credentials"]
+}

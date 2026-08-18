@@ -84,7 +84,7 @@ async function invokeScheduleSet(
 
 export function buildServer(): McpServer {
   const server = new McpServer(
-    { name: "micro-mcp", version: "0.4.2" },
+    { name: "micro-mcp", version: "0.4.3" },
     {
       capabilities: { tools: {} },
       instructions:
@@ -668,6 +668,35 @@ export function buildServer(): McpServer {
       await invoke([
         "project", "delete", "--confirm-slug", slug, "--confirm", "--json",
       ], path),
+  );
+
+  server.registerTool(
+    "micro_gallery",
+    {
+      title: "Browse curated Micros",
+      description: "List reviewed, licensed immutable Micro source snapshots without authentication or a linked project.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["gallery", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_remix",
+    {
+      title: "Remix a curated Micro",
+      description: "Restore one licensed source snapshot into a fresh local directory with provenance. Does not create a project, reserve a slug, or copy runtime data and provider state.",
+      inputSchema: z.object({
+        entry: z.string().regex(/^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$/),
+        directory: z.string().optional().describe("Fresh local directory; defaults to the gallery entry ID"),
+        path: z.string().optional().describe("Parent working directory"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ entry, directory, path }) =>
+      await invoke(["remix", entry, ...(directory ? [directory] : []), "--json"], path),
   );
 
   server.registerTool(

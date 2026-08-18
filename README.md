@@ -13,7 +13,7 @@ Install the skill directly from this repository, or configure the bundled stdio 
   "mcpServers": {
     "micro": {
       "command": "npx",
-      "args": ["-y", "@andrebaltazar/micro-mcp@0.4.2"]
+      "args": ["-y", "@andrebaltazar/micro-mcp@0.4.3"]
     }
   }
 }
@@ -44,6 +44,9 @@ The read-only email tool reports owner-authorized quota and delivery state for
 verified-user notifications without exposing message bodies or credentials.
 The public platform-status tool separates a Micro-wide incident from a linked
 project failure before a harness changes or rolls back user code.
+Public gallery and local remix tools let a harness select one reviewed,
+licensed immutable source snapshot, restore it with provenance, remove the
+source slug, and rebuild it without creating a project or reserving anything.
 Invitation acceptance and private-grant creation intentionally remain secure CLI
 handoffs so bearer tokens never enter MCP or model context.
 
