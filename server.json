@@ -8,12 +8,12 @@
     "source": "github"
   },
   "websiteUrl": "https://micro.do",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@microdotdo/micro-mcp",
-      "version": "0.4.7",
+      "version": "0.4.8",
       "transport": {
         "type": "stdio"
       }

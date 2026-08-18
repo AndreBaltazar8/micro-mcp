@@ -2,7 +2,7 @@
   "mcpServers": {
     "micro": {
       "command": "npx",
-      "args": ["-y", "@microdotdo/micro-mcp@0.4.7"]
+      "args": ["-y", "@microdotdo/micro-mcp@0.4.8"]
     }
   }
 }

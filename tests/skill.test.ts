@@ -3,6 +3,8 @@ import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 
+import { MICRO_MCP_VERSION } from "../src/version.js";
+
 test("skill routes every linked reference and contains no placeholders", async () => {
   const skillPath = resolve("skills/micro-sites/SKILL.md");
   const source = await readFile(skillPath, "utf8");
@@ -23,6 +25,7 @@ test("release metadata agrees", async () => {
     readFile("compatibility.json", "utf8").then(JSON.parse),
   ]);
   assert.equal(packageJson.version, pluginJson.version);
+  assert.equal(packageJson.version, MICRO_MCP_VERSION);
   assert.equal(packageJson.version, serverJson.version);
   assert.equal(packageJson.version, compatibility.microMcp);
   assert.equal(packageJson.mcpName, serverJson.name);

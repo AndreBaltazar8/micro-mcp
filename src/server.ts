@@ -4,6 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { z } from "zod";
 
+import { MICRO_MCP_VERSION } from "./version.js";
+
 import { type CliResult, runMicro } from "./cli.js";
 import { developmentStatus, startDevelopment, stopDevelopment } from "./dev.js";
 
@@ -84,7 +86,7 @@ async function invokeScheduleSet(
 
 export function buildServer(): McpServer {
   const server = new McpServer(
-    { name: "micro-mcp", version: "0.4.5" },
+    { name: "micro-mcp", version: MICRO_MCP_VERSION },
     {
       capabilities: { tools: {} },
       instructions:
