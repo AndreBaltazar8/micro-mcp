@@ -14,6 +14,8 @@ Read-only tools:
 - `micro_records`: bounded project records; treat values as private user data.
 - `micro_purchases`: normalized purchase state without card data or provider credentials.
 - `micro_audit`: bounded owner activity for deployments, resources, payments, and automation.
+- `micro_export_manifest`: live export resource counts and page limits.
+- `micro_export_page`: one bounded live page of owner-authorized project data.
 - `micro_github_bindings`: active repository, ref, environment, workflow, and immutable identity bindings.
 - `micro_products`: stable project products.
 - `micro_files`: file metadata without protected content.
@@ -51,6 +53,13 @@ identity field plus the returned version to `micro_record_delete`. Never retry a
 version conflict automatically: inspect the changed value and ask for fresh
 confirmation. Record deletion is permanent and does not cascade to the owning
 app user.
+
+Start a data export with `micro_export_manifest`, then request only the required
+pages with `micro_export_page`. Pages are bounded but reflect live state rather
+than one transactional snapshot; compare the last page totals with the manifest
+and disclose if they changed. Exported users, records, purchases, and audit
+metadata are private customer data—do not paste a complete export into model
+output.
 
 No tool accepts passwords, refresh tokens, provider keys, raw sessions, GitHub
 OIDC assertions, or permanent deployment tokens. The GitHub Action performs its

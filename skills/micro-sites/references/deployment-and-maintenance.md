@@ -46,6 +46,16 @@ micro records delete production notes project welcome --version 3 --confirm --js
 A version conflict means the value changed; inspect it again instead of
 automatically retrying the permanent deletion.
 
+For a bounded owner export, read the manifest and walk each required live page:
+
+```sh
+micro export --json
+micro export records --limit 100 --offset 0 --json
+```
+
+Pages are not a transactional snapshot. Compare totals after the final page,
+report changes, and keep customer data out of ordinary harness output.
+
 Compare local base revision with remote state. If remote source changed, pull and review it; do not overwrite silently. Build, test, preview, deploy, then check the exact live URL and relevant user journey.
 
 Rollback changes code only:

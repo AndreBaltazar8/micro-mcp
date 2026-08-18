@@ -403,6 +403,37 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_export_manifest",
+    {
+      title: "Inspect Micro export manifest",
+      description: "Read live project-data export resource counts and pagination limits. The manifest is not a transactional snapshot.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["export", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_export_page",
+    {
+      title: "Export one bounded Micro data page",
+      description: "Read one bounded live page of project users, records, purchases, entitlements, products, files, or audit events.",
+      inputSchema: directoryInput.extend({
+        resource: z.enum(["users", "records", "purchases", "entitlements", "products", "files", "audit"]),
+        limit: z.number().int().min(1).max(100).default(100),
+        offset: z.number().int().min(0).max(100000).default(0),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, resource, limit, offset }) =>
+      await invoke([
+        "export", resource, "--limit", String(limit), "--offset", String(offset), "--json",
+      ], path),
+  );
+
+  server.registerTool(
     "micro_products",
     {
       title: "List Micro products",

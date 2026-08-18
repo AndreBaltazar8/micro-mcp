@@ -54,6 +54,8 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_record_delete",
       "micro_purchases",
       "micro_audit",
+      "micro_export_manifest",
+      "micro_export_page",
       "micro_products",
       "micro_products_sync",
       "micro_files",
@@ -179,6 +181,24 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       },
     });
     assert.equal(recordUnconfirmed.isError, true);
+
+    const manifest = await client.callTool({
+      name: "micro_export_manifest",
+      arguments: { path: fixture },
+    });
+    assert.equal(manifest.isError, false);
+    const manifestOutput = manifest.structuredContent as { json?: unknown };
+    assert.deepEqual(manifestOutput.json, { args: ["export", "--json"] });
+
+    const exportPage = await client.callTool({
+      name: "micro_export_page",
+      arguments: { path: fixture, resource: "records", limit: 50, offset: 100 },
+    });
+    assert.equal(exportPage.isError, false);
+    const exportPageOutput = exportPage.structuredContent as { json?: unknown };
+    assert.deepEqual(exportPageOutput.json, {
+      args: ["export", "records", "--limit", "50", "--offset", "100", "--json"],
+    });
   } finally {
     await client.close();
   }
