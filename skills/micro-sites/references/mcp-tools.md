@@ -14,6 +14,7 @@ Read-only tools:
 - `micro_invitations`: invitation metadata without acceptance tokens.
 - `micro_domains`: custom domains and DNS proof state.
 - `micro_private_grants`: private-site grant metadata without bearer tokens.
+- `micro_schedules`: durable schedule definitions and latest delivery state.
 - `micro_project_deletions`: durable project-deletion receipts, progress, failures, and slug release times.
 - `micro_status`: linked project, resources, usage, and health.
 - `micro_logs`: bounded recent project logs.
@@ -66,6 +67,9 @@ Mutating tools:
 - `micro_domain_verify`: verify and activate one inspected domain; requires `confirm: true`.
 - `micro_domain_remove`: remove one exact custom domain; requires `confirm: true`.
 - `micro_private_grant_revoke`: revoke one exact private-site grant; requires `confirm: true`.
+- `micro_schedule_set`: create or replace one interval and non-secret object payload; requires `confirm: true`.
+- `micro_schedule_run`: enqueue one additional event; requires `confirm: true` and is not idempotent.
+- `micro_schedule_remove`: remove one schedule and cancel pending or retryable deliveries; requires `confirm: true`.
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
 
@@ -120,6 +124,12 @@ OIDC assertions, or permanent deployment tokens. The GitHub Action performs its
 own OIDC exchange; do not pass workflow identity through an MCP call. When a
 secure owner interaction is required, stop the MCP workflow and use interactive
 CLI/browser handoff.
+
+Read `micro_schedules` immediately before schedule mutation. Never put a secret,
+bearer token, or user-private record into `payload`. Treat `micro_schedule_run`
+as a new event on every successful invocation; do not retry it automatically
+after an ambiguous transport failure. Event handlers must persist and dedupe
+`x-micro-event-id` before applying side effects.
 
 There is deliberately no MCP tool for invitation acceptance or private-grant
 creation. Invitation and private-access bearer tokens must not enter model

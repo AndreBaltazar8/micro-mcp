@@ -63,6 +63,10 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_domain_remove",
       "micro_private_grants",
       "micro_private_grant_revoke",
+      "micro_schedules",
+      "micro_schedule_set",
+      "micro_schedule_run",
+      "micro_schedule_remove",
       "micro_project_deletions",
       "micro_project_delete",
       "micro_pull",
@@ -191,6 +195,31 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       { path: fixture, grantId: resourceId, confirm: true },
       ["private-grants", "revoke", resourceId, "--confirm", "--json"],
     );
+    await expectToolArgs("micro_schedules", { path: fixture }, ["schedules", "--json"]);
+    await expectToolArgs(
+      "micro_schedule_run",
+      { path: fixture, scheduleId: "daily-digest", confirm: true },
+      ["schedules", "run", "daily-digest", "--confirm", "--json"],
+    );
+    await expectToolArgs(
+      "micro_schedule_remove",
+      { path: fixture, scheduleId: "daily-digest", confirm: true },
+      ["schedules", "remove", "daily-digest", "--confirm", "--json"],
+    );
+    const scheduleSet = await client.callTool({
+      name: "micro_schedule_set",
+      arguments: {
+        path: fixture, scheduleId: "daily-digest", everyMinutes: 1440,
+        payload: { kind: "digest" }, enabled: false, confirm: true,
+      },
+    });
+    assert.equal(scheduleSet.isError, false);
+    const scheduleArgs = (scheduleSet.structuredContent as { json: { args: string[] } }).json.args;
+    assert.deepEqual(scheduleArgs.slice(0, 6), [
+      "schedules", "set", "daily-digest", "--every-minutes", "1440", "--payload-file",
+    ]);
+    assert.match(scheduleArgs[6] ?? "", /micro-schedule-.+\/payload\.json$/);
+    assert.deepEqual(scheduleArgs.slice(7), ["--disabled", "--json"]);
 
     const unsafeMember = await client.callTool({
       name: "micro_member_set",
@@ -206,6 +235,15 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       arguments: { monthlyCents: 2500, warningPercent: 75, hardStop: true, confirm: false },
     });
     assert.equal(unconfirmedCap.isError, true);
+
+    const unconfirmedSchedule = await client.callTool({
+      name: "micro_schedule_set",
+      arguments: {
+        path: fixture, scheduleId: "daily-digest", everyMinutes: 1440,
+        payload: {}, enabled: true, confirm: false,
+      },
+    });
+    assert.equal(unconfirmedSchedule.isError, true);
 
     const projectDeletions = await client.callTool({
       name: "micro_project_deletions",

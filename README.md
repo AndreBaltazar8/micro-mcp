@@ -13,7 +13,7 @@ Install the skill directly from this repository, or configure the bundled stdio 
   "mcpServers": {
     "micro": {
       "command": "npx",
-      "args": ["-y", "@andrebaltazar/micro-mcp@0.3.0"]
+      "args": ["-y", "@andrebaltazar/micro-mcp@0.4.0"]
     }
   }
 }
@@ -38,6 +38,8 @@ deployments, or local source.
 
 Project operation tools cover roles and invitations, private visibility,
 custom-domain proof, plan usage, spending caps, and hosted platform billing.
+Durable schedule tools list, configure, manually enqueue, and remove authenticated
+`schedule.triggered` events for the active production Wasm deployment.
 Invitation acceptance and private-grant creation intentionally remain secure CLI
 handoffs so bearer tokens never enter MCP or model context.
 

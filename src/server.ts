@@ -1,4 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/server";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { z } from "zod";
 
 import { type CliResult, runMicro } from "./cli.js";
@@ -59,9 +62,29 @@ async function invoke(args: string[], path?: string) {
   }
 }
 
+async function invokeScheduleSet(
+  path: string | undefined,
+  scheduleId: string,
+  everyMinutes: number,
+  payload: Record<string, unknown>,
+  enabled: boolean,
+) {
+  const directory = await mkdtemp(join(tmpdir(), "micro-schedule-"));
+  const payloadFile = join(directory, "payload.json");
+  try {
+    await writeFile(payloadFile, JSON.stringify(payload), { mode: 0o600 });
+    return await invoke([
+      "schedules", "set", scheduleId, "--every-minutes", String(everyMinutes),
+      "--payload-file", payloadFile, ...(enabled ? [] : ["--disabled"]), "--json",
+    ], path);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+}
+
 export function buildServer(): McpServer {
   const server = new McpServer(
-    { name: "micro-mcp", version: "0.3.0" },
+    { name: "micro-mcp", version: "0.4.0" },
     {
       capabilities: { tools: {} },
       instructions:
@@ -539,6 +562,69 @@ export function buildServer(): McpServer {
     },
     async ({ path, grantId }) =>
       await invoke(["private-grants", "revoke", grantId, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_schedules",
+    {
+      title: "List Micro schedules",
+      description: "List durable authenticated schedule events and their latest delivery state for the linked project.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["schedules", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_schedule_set",
+    {
+      title: "Set Micro schedule",
+      description: "Create or replace one interval schedule. Its bounded object payload is non-secret configuration delivered to the active production Wasm deployment.",
+      inputSchema: directoryInput.extend({
+        scheduleId: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/),
+        everyMinutes: z.number().int().min(5).max(10080),
+        payload: z.record(z.string(), z.unknown()).default({}),
+        enabled: z.boolean().default(true),
+        confirm: z.literal(true).describe("Explicit confirmation to create or replace this schedule"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, scheduleId, everyMinutes, payload, enabled }) =>
+      await invokeScheduleSet(path, scheduleId, everyMinutes, payload, enabled),
+  );
+
+  server.registerTool(
+    "micro_schedule_run",
+    {
+      title: "Run Micro schedule now",
+      description: "Enqueue one additional authenticated schedule event for the active production Wasm deployment.",
+      inputSchema: directoryInput.extend({
+        scheduleId: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/),
+        confirm: z.literal(true).describe("Explicit confirmation to enqueue this schedule now"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, scheduleId }) =>
+      await invoke(["schedules", "run", scheduleId, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_schedule_remove",
+    {
+      title: "Remove Micro schedule",
+      description: "Remove one exact schedule and cancel its pending or retryable deliveries.",
+      inputSchema: directoryInput.extend({
+        scheduleId: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/),
+        confirm: z.literal(true).describe("Explicit confirmation to remove this schedule"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, scheduleId }) =>
+      await invoke(["schedules", "remove", scheduleId, "--confirm", "--json"], path),
   );
 
   server.registerTool(

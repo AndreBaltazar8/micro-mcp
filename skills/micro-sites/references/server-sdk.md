@@ -26,4 +26,8 @@ Data operations are `data.get`, `data.list`, `data.put`, and `data.delete`. Sele
 
 Render private HTML only after checking `request.context.user`. Recheck entitlement or record policy through the platform API for every privileged action; hiding a link is not authorization.
 
-Application events such as `purchase.completed` are internal authenticated invocations with stable event IDs and at-least-once delivery. Make handlers idempotent and keep the platform purchase ledger authoritative.
+Application events such as `purchase.completed` and `schedule.triggered` are
+internal authenticated invocations with stable `x-micro-event-id` values and
+at-least-once delivery. Public requests never reach these runner-owned paths.
+Make handlers idempotent and keep platform ledgers authoritative. Read
+`schedules.md` before implementing recurring work.

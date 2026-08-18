@@ -1,0 +1,6 @@
+{
+  "name": "scheduled-maintenance",
+  "prompt": "Add a daily catalog refresh to my deployed Micro and let me trigger it once for verification.",
+  "mustMention": ["micro schedules", "schedule.triggered", "x-micro-event-id", "at least once", "non-secret payload", "confirm"],
+  "mustNotContain": ["public callback", "credential in payload", "external /_micro request"]
+}

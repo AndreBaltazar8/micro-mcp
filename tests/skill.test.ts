@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 
@@ -28,4 +28,19 @@ test("release metadata agrees", async () => {
   assert.equal(packageJson.mcpName, serverJson.name);
   assert.equal(serverJson.packages[0].identifier, packageJson.name);
   assert.equal(serverJson.packages[0].version, packageJson.version);
+});
+
+test("skill evaluations are structured and cover scheduled maintenance", async () => {
+  const directory = resolve("tests/skill-evals");
+  const files = (await readdir(directory)).filter((name) => name.endsWith(".json"));
+  const evaluations = await Promise.all(files.map(async (name) =>
+    await readFile(resolve(directory, name), "utf8").then(JSON.parse)));
+  assert.equal(evaluations.length >= 4, true);
+  evaluations.forEach((evaluation) => {
+    assert.equal(typeof evaluation.name, "string");
+    assert.equal(typeof evaluation.prompt, "string");
+    assert.equal(Array.isArray(evaluation.mustMention), true);
+    assert.equal(Array.isArray(evaluation.mustNotContain), true);
+  });
+  assert.equal(evaluations.some((evaluation) => evaluation.name === "scheduled-maintenance"), true);
 });
