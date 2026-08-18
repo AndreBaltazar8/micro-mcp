@@ -1,0 +1,6 @@
+{
+  "name": "platform-incident-diagnosis",
+  "prompt": "Several unrelated live Micro routes suddenly fail. Diagnose and fix them.",
+  "mustMention": ["micro_platform_status", "published incident", "micro_status", "logs", "do not redeploy"],
+  "mustNotContain": ["ask for the internal bearer token", "publish an incident", "rotate credentials", "blind rollback"]
+}

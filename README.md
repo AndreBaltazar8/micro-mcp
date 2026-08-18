@@ -13,7 +13,7 @@ Install the skill directly from this repository, or configure the bundled stdio 
   "mcpServers": {
     "micro": {
       "command": "npx",
-      "args": ["-y", "@andrebaltazar/micro-mcp@0.4.1"]
+      "args": ["-y", "@andrebaltazar/micro-mcp@0.4.2"]
     }
   }
 }
@@ -42,6 +42,8 @@ Durable schedule tools list, configure, manually enqueue, and remove authenticat
 `schedule.triggered` events for the active production Wasm deployment.
 The read-only email tool reports owner-authorized quota and delivery state for
 verified-user notifications without exposing message bodies or credentials.
+The public platform-status tool separates a Micro-wide incident from a linked
+project failure before a harness changes or rolls back user code.
 Invitation acceptance and private-grant creation intentionally remain secure CLI
 handoffs so bearer tokens never enter MCP or model context.
 

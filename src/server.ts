@@ -84,7 +84,7 @@ async function invokeScheduleSet(
 
 export function buildServer(): McpServer {
   const server = new McpServer(
-    { name: "micro-mcp", version: "0.4.1" },
+    { name: "micro-mcp", version: "0.4.2" },
     {
       capabilities: { tools: {} },
       instructions:
@@ -685,6 +685,18 @@ export function buildServer(): McpServer {
     },
     async ({ slug, directory, path }) =>
       await invoke(["pull", slug, ...(directory ? [directory] : []), "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_platform_status",
+    {
+      title: "Read public Micro platform status",
+      description: "Read Micro-wide component state, published incidents, and bounded 30-day delivery indicators without authentication or a linked project.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["platform", "status", "--json"]),
   );
 
   server.registerTool(

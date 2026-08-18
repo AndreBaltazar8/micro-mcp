@@ -1,6 +1,6 @@
 ---
 name: micro-sites
-description: Build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using public assets, Abla WebAssembly server code, app authentication, project data, products, payments, protected files, schedules, and verified-user email. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, scheduled work, transactional notifications, remote previews, production deployment, rollback, or GitHub deployment automation.
+description: Build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using public assets, Abla WebAssembly server code, app authentication, project data, products, payments, protected files, schedules, verified-user email, and public platform status. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, scheduled work, transactional notifications, incident diagnosis, remote previews, production deployment, rollback, or GitHub deployment automation.
 ---
 
 # Micro Sites
@@ -17,6 +17,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Read [project-operation.md](references/project-operation.md) for teams, invitations, private sites, custom domains, plans, usage caps, or platform billing.
 - Read [schedules.md](references/schedules.md) before adding recurring or manually triggered background work.
 - Read [outbound-email.md](references/outbound-email.md) before adding receipts, confirmations, or user notifications.
+- Read [platform-status.md](references/platform-status.md) when a live failure may be platform-wide.
 - Read [deployment-and-maintenance.md](references/deployment-and-maintenance.md) for updates, logs, usage, conflicts, GitHub automation, or rollback.
 - Read [security-and-quality.md](references/security-and-quality.md) before implementing auth, money, data, files, or production changes.
 - Read [mcp-tools.md](references/mcp-tools.md) before invoking Micro MCP tools.
