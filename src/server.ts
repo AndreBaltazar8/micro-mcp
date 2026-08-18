@@ -61,7 +61,7 @@ async function invoke(args: string[], path?: string) {
 
 export function buildServer(): McpServer {
   const server = new McpServer(
-    { name: "micro-mcp", version: "0.1.0" },
+    { name: "micro-mcp", version: "0.3.0" },
     {
       capabilities: { tools: {} },
       instructions:
@@ -218,6 +218,104 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_plans",
+    {
+      title: "List Micro plans",
+      description: "List the public Micro plan catalog and current usage allowances.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["plans", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_usage",
+    {
+      title: "Inspect Micro account usage",
+      description: "Read authenticated account plan, monthly usage, daily runner usage, and spending-cap state.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["usage", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_spending_cap_set",
+    {
+      title: "Set Micro spending cap",
+      description: "Replace the account monthly usage cap and warning threshold. A hard cap may stop requests when exhausted.",
+      inputSchema: z.object({
+        monthlyCents: z.number().int().min(0).max(1000000),
+        warningPercent: z.number().int().min(1).max(100),
+        hardStop: z.boolean().default(true),
+        confirm: z.literal(true).describe("Explicit confirmation to replace the current account spending-cap policy"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ monthlyCents, warningPercent, hardStop }) =>
+      await invoke([
+        "spending-cap", "set", "--monthly-cents", String(monthlyCents),
+        "--warning-percent", String(warningPercent), ...(hardStop ? [] : ["--soft"]), "--json",
+      ]),
+  );
+
+  server.registerTool(
+    "micro_spending_cap_delete",
+    {
+      title: "Remove Micro spending cap",
+      description: "Remove the authenticated account spending cap after inspecting current usage and policy.",
+      inputSchema: z.object({
+        confirm: z.literal(true).describe("Explicit confirmation to remove the account spending cap"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["spending-cap", "delete", "--confirm", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_billing",
+    {
+      title: "Inspect Micro billing",
+      description: "Read the authenticated account subscription state without exposing payment credentials or card data.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async () => await invoke(["billing", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_billing_checkout",
+    {
+      title: "Create Micro billing checkout",
+      description: "Create a hosted checkout session for one inspected Micro plan. This does not accept payment credentials.",
+      inputSchema: z.object({
+        plan: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{0,62})$/),
+        confirm: z.literal(true).describe("Explicit confirmation to create checkout for this plan"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ plan }) => await invoke(["billing", "checkout", plan, "--json"]),
+  );
+
+  server.registerTool(
+    "micro_billing_portal",
+    {
+      title: "Create Micro billing portal",
+      description: "Create a hosted Stripe billing-management session for the authenticated account.",
+      inputSchema: z.object({}),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async () => await invoke(["billing", "portal", "--json"]),
+  );
+
+  server.registerTool(
     "micro_projects",
     {
       title: "List Micro projects",
@@ -227,6 +325,220 @@ export function buildServer(): McpServer {
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     },
     async () => await invoke(["projects", "--json"]),
+  );
+
+  server.registerTool(
+    "micro_settings",
+    {
+      title: "Inspect Micro project settings",
+      description: "Read the linked project's visibility and authenticated caller authority.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["settings", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_visibility_set",
+    {
+      title: "Set Micro project visibility",
+      description: "Make the linked site public or require authenticated app access and explicit private grants.",
+      inputSchema: directoryInput.extend({
+        visibility: z.enum(["public", "private"]),
+        confirm: z.literal(true).describe("Explicit confirmation to change live project visibility"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, visibility }) =>
+      await invoke(["settings", "visibility", visibility, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_members",
+    {
+      title: "List Micro project members",
+      description: "List the linked project's owner and delegated members, roles, and promotion authority.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["members", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_member_set",
+    {
+      title: "Set Micro project member",
+      description: "Add or replace one existing account's project role. Viewers can never receive promotion authority.",
+      inputSchema: directoryInput.extend({
+        email: z.string().email().max(320),
+        role: z.enum(["viewer", "developer", "admin"]),
+        canPromote: z.boolean().default(false),
+        confirm: z.literal(true).describe("Explicit confirmation to grant or replace this account's project access"),
+      }).refine((value) => value.role !== "viewer" || !value.canPromote, {
+        message: "Viewers cannot promote deployments",
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, email, role, canPromote }) =>
+      await invoke([
+        "members", "set", email, role, ...(canPromote ? ["--can-promote"] : []), "--json",
+      ], path),
+  );
+
+  server.registerTool(
+    "micro_member_remove",
+    {
+      title: "Remove Micro project member",
+      description: "Revoke one exact non-owner account's access to the linked project.",
+      inputSchema: directoryInput.extend({
+        accountId: z.string().uuid(),
+        confirm: z.literal(true).describe("Explicit confirmation to revoke this account's project access"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, accountId }) =>
+      await invoke(["members", "remove", accountId, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_invitations",
+    {
+      title: "List Micro project invitations",
+      description: "List bounded invitation metadata without exposing acceptance tokens.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["invitations", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_invitation_create",
+    {
+      title: "Invite a Micro project member",
+      description: "Email one single-use project invitation with an explicit role and optional promotion authority.",
+      inputSchema: directoryInput.extend({
+        email: z.string().email().max(320),
+        role: z.enum(["viewer", "developer", "admin"]),
+        canPromote: z.boolean().default(false),
+        confirm: z.literal(true).describe("Explicit confirmation to send this project invitation email"),
+      }).refine((value) => value.role !== "viewer" || !value.canPromote, {
+        message: "Viewers cannot promote deployments",
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, email, role, canPromote }) =>
+      await invoke([
+        "invitations", "create", email, role, ...(canPromote ? ["--can-promote"] : []), "--json",
+      ], path),
+  );
+
+  server.registerTool(
+    "micro_invitation_revoke",
+    {
+      title: "Revoke Micro project invitation",
+      description: "Revoke one exact pending project invitation before it is accepted.",
+      inputSchema: directoryInput.extend({
+        invitationId: z.string().uuid(),
+        confirm: z.literal(true).describe("Explicit confirmation to revoke this invitation"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, invitationId }) =>
+      await invoke(["invitations", "revoke", invitationId, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_domains",
+    {
+      title: "List Micro custom domains",
+      description: "List the linked project's custom domains and DNS proof state.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["domains", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_domain_add",
+    {
+      title: "Add Micro custom domain",
+      description: "Register one normalized hostname and return the DNS ownership proof that must be published.",
+      inputSchema: directoryInput.extend({
+        hostname: z.string().regex(/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, hostname }) => await invoke(["domains", "add", hostname, "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_domain_verify",
+    {
+      title: "Verify Micro custom domain",
+      description: "Check the exact domain's DNS proof and activate it only when ownership resolves correctly.",
+      inputSchema: directoryInput.extend({
+        domainId: z.string().uuid(),
+        confirm: z.literal(true).describe("Explicit confirmation to verify and activate this custom domain"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, domainId }) =>
+      await invoke(["domains", "verify", domainId, "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_domain_remove",
+    {
+      title: "Remove Micro custom domain",
+      description: "Remove one exact custom domain from the linked project.",
+      inputSchema: directoryInput.extend({
+        domainId: z.string().uuid(),
+        confirm: z.literal(true).describe("Explicit confirmation to stop serving this custom domain"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, domainId }) =>
+      await invoke(["domains", "remove", domainId, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_private_grants",
+    {
+      title: "List Micro private access grants",
+      description: "List bounded private-site grant metadata without exposing bearer tokens.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["private-grants", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_private_grant_revoke",
+    {
+      title: "Revoke Micro private access grant",
+      description: "Revoke one exact private-site bearer grant. Token creation remains a secure CLI handoff.",
+      inputSchema: directoryInput.extend({
+        grantId: z.string().uuid(),
+        confirm: z.literal(true).describe("Explicit confirmation to revoke this private access grant"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, grantId }) =>
+      await invoke(["private-grants", "revoke", grantId, "--confirm", "--json"], path),
   );
 
   server.registerTool(

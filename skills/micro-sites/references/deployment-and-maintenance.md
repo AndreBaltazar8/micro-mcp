@@ -8,6 +8,10 @@ micro deployments --json
 micro logs --since 30m --json
 ```
 
+When access, cost, or routing is involved, also load
+[project-operation.md](project-operation.md) and inspect the corresponding fresh
+settings, membership, domain, usage, or billing state before mutation.
+
 When the issue involves persistent state, inspect only the bounded surface that
 is actually relevant:
 

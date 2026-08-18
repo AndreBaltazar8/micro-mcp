@@ -41,7 +41,28 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_github_link",
       "micro_github_bindings",
       "micro_github_revoke",
+      "micro_plans",
+      "micro_usage",
+      "micro_spending_cap_set",
+      "micro_spending_cap_delete",
+      "micro_billing",
+      "micro_billing_checkout",
+      "micro_billing_portal",
       "micro_projects",
+      "micro_settings",
+      "micro_visibility_set",
+      "micro_members",
+      "micro_member_set",
+      "micro_member_remove",
+      "micro_invitations",
+      "micro_invitation_create",
+      "micro_invitation_revoke",
+      "micro_domains",
+      "micro_domain_add",
+      "micro_domain_verify",
+      "micro_domain_remove",
+      "micro_private_grants",
+      "micro_private_grant_revoke",
       "micro_project_deletions",
       "micro_project_delete",
       "micro_pull",
@@ -72,6 +93,119 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_rollback",
     ]);
     assert.equal(JSON.stringify(listing).includes("password"), false);
+
+    const expectToolArgs = async (
+      name: string,
+      args: Record<string, unknown>,
+      expected: string[],
+    ) => {
+      const invocation = await client.callTool({ name, arguments: args });
+      assert.equal(invocation.isError, false, `${name} should succeed`);
+      const output = invocation.structuredContent as { json?: unknown };
+      assert.deepEqual(output.json, { args: expected });
+    };
+
+    const resourceId = "11111111-1111-4111-8111-111111111111";
+    await expectToolArgs("micro_plans", {}, ["plans", "--json"]);
+    await expectToolArgs("micro_usage", {}, ["usage", "--json"]);
+    await expectToolArgs(
+      "micro_spending_cap_set",
+      { monthlyCents: 2500, warningPercent: 75, hardStop: false, confirm: true },
+      [
+        "spending-cap", "set", "--monthly-cents", "2500",
+        "--warning-percent", "75", "--soft", "--json",
+      ],
+    );
+    await expectToolArgs(
+      "micro_spending_cap_delete",
+      { confirm: true },
+      ["spending-cap", "delete", "--confirm", "--json"],
+    );
+    await expectToolArgs("micro_billing", {}, ["billing", "--json"]);
+    await expectToolArgs(
+      "micro_billing_checkout",
+      { plan: "pro", confirm: true },
+      ["billing", "checkout", "pro", "--json"],
+    );
+    await expectToolArgs("micro_billing_portal", {}, ["billing", "portal", "--json"]);
+    await expectToolArgs("micro_settings", { path: fixture }, ["settings", "--json"]);
+    await expectToolArgs(
+      "micro_visibility_set",
+      { path: fixture, visibility: "private", confirm: true },
+      ["settings", "visibility", "private", "--confirm", "--json"],
+    );
+    await expectToolArgs("micro_members", { path: fixture }, ["members", "--json"]);
+    await expectToolArgs(
+      "micro_member_set",
+      {
+        path: fixture, email: "member@example.com", role: "admin",
+        canPromote: true, confirm: true,
+      },
+      ["members", "set", "member@example.com", "admin", "--can-promote", "--json"],
+    );
+    await expectToolArgs(
+      "micro_member_remove",
+      { path: fixture, accountId: resourceId, confirm: true },
+      ["members", "remove", resourceId, "--confirm", "--json"],
+    );
+    await expectToolArgs("micro_invitations", { path: fixture }, ["invitations", "--json"]);
+    await expectToolArgs(
+      "micro_invitation_create",
+      {
+        path: fixture, email: "invitee@example.com", role: "developer",
+        canPromote: true, confirm: true,
+      },
+      [
+        "invitations", "create", "invitee@example.com", "developer",
+        "--can-promote", "--json",
+      ],
+    );
+    await expectToolArgs(
+      "micro_invitation_revoke",
+      { path: fixture, invitationId: resourceId, confirm: true },
+      ["invitations", "revoke", resourceId, "--confirm", "--json"],
+    );
+    await expectToolArgs("micro_domains", { path: fixture }, ["domains", "--json"]);
+    await expectToolArgs(
+      "micro_domain_add",
+      { path: fixture, hostname: "shop.example.com" },
+      ["domains", "add", "shop.example.com", "--json"],
+    );
+    await expectToolArgs(
+      "micro_domain_verify",
+      { path: fixture, domainId: resourceId, confirm: true },
+      ["domains", "verify", resourceId, "--json"],
+    );
+    await expectToolArgs(
+      "micro_domain_remove",
+      { path: fixture, domainId: resourceId, confirm: true },
+      ["domains", "remove", resourceId, "--confirm", "--json"],
+    );
+    await expectToolArgs(
+      "micro_private_grants",
+      { path: fixture },
+      ["private-grants", "--json"],
+    );
+    await expectToolArgs(
+      "micro_private_grant_revoke",
+      { path: fixture, grantId: resourceId, confirm: true },
+      ["private-grants", "revoke", resourceId, "--confirm", "--json"],
+    );
+
+    const unsafeMember = await client.callTool({
+      name: "micro_member_set",
+      arguments: {
+        path: fixture, email: "member@example.com", role: "viewer",
+        canPromote: true, confirm: true,
+      },
+    });
+    assert.equal(unsafeMember.isError, true);
+
+    const unconfirmedCap = await client.callTool({
+      name: "micro_spending_cap_set",
+      arguments: { monthlyCents: 2500, warningPercent: 75, hardStop: true, confirm: false },
+    });
+    assert.equal(unconfirmedCap.isError, true);
 
     const projectDeletions = await client.callTool({
       name: "micro_project_deletions",

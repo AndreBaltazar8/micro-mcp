@@ -1,6 +1,6 @@
 {
   "name": "@andrebaltazar/micro-mcp",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "mcpName": "io.github.AndreBaltazar8/micro-mcp",
   "description": "Official skill and local MCP tools for building and deploying Micro sites",
   "type": "module",

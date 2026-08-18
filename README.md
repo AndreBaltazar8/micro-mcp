@@ -13,7 +13,7 @@ Install the skill directly from this repository, or configure the bundled stdio 
   "mcpServers": {
     "micro": {
       "command": "npx",
-      "args": ["-y", "@andrebaltazar/micro-mcp@0.1.0"]
+      "args": ["-y", "@andrebaltazar/micro-mcp@0.3.0"]
     }
   }
 }
@@ -35,6 +35,11 @@ For record recovery, inspect `micro_backups` immediately before acting. A restor
 requires the exact backup digest and fresh current-record digest; it replaces
 records only and never rewinds users, purchases, entitlements, products, files,
 deployments, or local source.
+
+Project operation tools cover roles and invitations, private visibility,
+custom-domain proof, plan usage, spending caps, and hosted platform billing.
+Invitation acceptance and private-grant creation intentionally remain secure CLI
+handoffs so bearer tokens never enter MCP or model context.
 
 ## Develop
 

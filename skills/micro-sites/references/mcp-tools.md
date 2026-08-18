@@ -5,7 +5,15 @@ Use typed tools when installed; use the same CLI commands directly otherwise.
 Read-only tools:
 
 - `micro_doctor`: CLI version and owner account status.
+- `micro_plans`: public plan catalog and allowances.
+- `micro_usage`: authenticated plan, usage, and spending-cap state.
+- `micro_billing`: authenticated subscription state without payment credentials.
 - `micro_projects`: visible owner projects.
+- `micro_settings`: linked project visibility and caller authority.
+- `micro_members`: project membership, roles, and promotion grants.
+- `micro_invitations`: invitation metadata without acceptance tokens.
+- `micro_domains`: custom domains and DNS proof state.
+- `micro_private_grants`: private-site grant metadata without bearer tokens.
 - `micro_project_deletions`: durable project-deletion receipts, progress, failures, and slug release times.
 - `micro_status`: linked project, resources, usage, and health.
 - `micro_logs`: bounded recent project logs.
@@ -45,6 +53,19 @@ Mutating tools:
 - `micro_retention_set`: replace the inspected keep-forever or finite record policy; requires `confirm: true`.
 - `micro_retention_prune`: permanently prune the exact previewed aged-record count; requires `confirm: true` and `expectedRecords`.
 - `micro_project_delete`: permanently delete the exact locally linked project; requires the fresh linked slug and `confirm: true`.
+- `micro_spending_cap_set`: replace the account usage-cap policy; requires `confirm: true`.
+- `micro_spending_cap_delete`: remove the account usage cap; requires `confirm: true`.
+- `micro_billing_checkout`: create hosted checkout for one inspected plan; requires `confirm: true`.
+- `micro_billing_portal`: create a hosted billing-management session.
+- `micro_visibility_set`: replace linked project visibility; requires `confirm: true`.
+- `micro_member_set`: add or replace one known account's project role; requires `confirm: true`.
+- `micro_member_remove`: revoke one exact member; requires `confirm: true`.
+- `micro_invitation_create`: send one role-bounded invitation email; requires `confirm: true`.
+- `micro_invitation_revoke`: revoke one exact invitation; requires `confirm: true`.
+- `micro_domain_add`: register one exact hostname and return its DNS proof.
+- `micro_domain_verify`: verify and activate one inspected domain; requires `confirm: true`.
+- `micro_domain_remove`: remove one exact custom domain; requires `confirm: true`.
+- `micro_private_grant_revoke`: revoke one exact private-site grant; requires `confirm: true`.
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
 
@@ -99,6 +120,11 @@ OIDC assertions, or permanent deployment tokens. The GitHub Action performs its
 own OIDC exchange; do not pass workflow identity through an MCP call. When a
 secure owner interaction is required, stop the MCP workflow and use interactive
 CLI/browser handoff.
+
+There is deliberately no MCP tool for invitation acceptance or private-grant
+creation. Invitation and private-access bearer tokens must not enter model
+context. Use `micro invitations accept --token-stdin` or a secure interactive
+`micro private-grants create` handoff as described in `project-operation.md`.
 
 `acceptPriceChanges` and `acceptLiveProducts` are separate commercial
 confirmations on deploy and product sync tools. Set `acceptLiveProducts` only

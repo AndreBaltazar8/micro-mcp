@@ -14,6 +14,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Read [server-sdk.md](references/server-sdk.md) for Abla handlers, SSR, request context, data, purchases, or events.
 - Read [products-and-files.md](references/products-and-files.md) before editing `micro.yaml` or handling digital files.
 - Read [cli-workflow.md](references/cli-workflow.md) for local build, preview, deploy, or secure account handoff.
+- Read [project-operation.md](references/project-operation.md) for teams, invitations, private sites, custom domains, plans, usage caps, or platform billing.
 - Read [deployment-and-maintenance.md](references/deployment-and-maintenance.md) for updates, logs, usage, conflicts, GitHub automation, or rollback.
 - Read [security-and-quality.md](references/security-and-quality.md) before implementing auth, money, data, files, or production changes.
 - Read [mcp-tools.md](references/mcp-tools.md) before invoking Micro MCP tools.
@@ -37,6 +38,8 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Never assume a slug is owned before the first validated production deployment succeeds.
 - Never put protected or paid files under `public/`.
 - Never expose owner sessions, app-session cookies, database credentials, provider secrets, payment IDs, storage paths, or deployment tokens to site code.
+- Never place an invitation token or private-site bearer token in an MCP argument, model-visible command, log, file, or report. Accept invitations through `--token-stdin`; create private grants only in a secure interactive CLI handoff.
+- Treat every `/_micro/*` route as runner-owned. A site must never define, proxy, or receive it; unknown platform paths fail closed.
 - Treat the browser SDK as ergonomic code, not as an authority boundary.
 - Keep project and user scope derived from the runner; never accept tenant identity from browser or guest arguments.
 - Keep `micro.yaml` synchronization non-destructive. Omitted resources are not deletions.
@@ -44,6 +47,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Treat record restore and backup deletion as destructive owner decisions. Read a fresh backup listing, require both exact digests and explicit confirmation, and never retry a conflict automatically. A record backup never protects or rewinds users, purchases, entitlements, products, files, or deployments.
 - Treat project deletion as irreversible. Inspect the linked project, export required data, require the exact slug and explicit confirmation, then retain and monitor the durable receipt. Never retry a failed cleanup automatically.
 - Do not connect local development or previews to production data or live payments.
+- Keep account billing owner-only. Project roles do not grant access to billing, spending caps, payment-provider state, or unrelated owner projects.
 - Report exact verification evidence and anything still unverified.
 
 ## Finish with a verification gate
