@@ -21,6 +21,20 @@ micro audit --json
 These commands are owner-only and may return personal data. Do not use them for
 routine deployment checks or reproduce unrelated records in model output.
 
+For an owner-authorized app-user access incident, select the exact UUID from the
+bounded user list, state the consequence, and require explicit confirmation for
+access-revoking operations:
+
+```sh
+micro users disable USER_ID --confirm --json
+micro users enable USER_ID --json
+micro users revoke-sessions USER_ID --confirm --json
+```
+
+Disablement and session revocation preserve records, purchases, and
+entitlements. Disablement also consumes active recovery and verification links;
+enabling restores sign-in eligibility but does not create a session.
+
 Compare local base revision with remote state. If remote source changed, pull and review it; do not overwrite silently. Build, test, preview, deploy, then check the exact live URL and relevant user journey.
 
 Rollback changes code only:

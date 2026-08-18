@@ -47,6 +47,9 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_logs",
       "micro_deployments",
       "micro_users",
+      "micro_user_disable",
+      "micro_user_enable",
+      "micro_user_sessions_revoke",
       "micro_records",
       "micro_purchases",
       "micro_audit",
@@ -86,6 +89,60 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
     assert.deepEqual(commercialOutput.json, {
       args: ["deploy", "paid-example", "--accept-price-changes", "--accept-live-products", "--json"],
     });
+
+    const disabled = await client.callTool({
+      name: "micro_user_disable",
+      arguments: {
+        path: fixture,
+        user: "11111111-1111-4111-8111-111111111111",
+        confirm: true,
+      },
+    });
+    assert.equal(disabled.isError, false);
+    const disabledOutput = disabled.structuredContent as { json?: unknown };
+    assert.deepEqual(disabledOutput.json, {
+      args: [
+        "users", "disable", "11111111-1111-4111-8111-111111111111",
+        "--confirm", "--json",
+      ],
+    });
+
+    const enabled = await client.callTool({
+      name: "micro_user_enable",
+      arguments: { path: fixture, user: "11111111-1111-4111-8111-111111111111" },
+    });
+    assert.equal(enabled.isError, false);
+    const enabledOutput = enabled.structuredContent as { json?: unknown };
+    assert.deepEqual(enabledOutput.json, {
+      args: ["users", "enable", "11111111-1111-4111-8111-111111111111", "--json"],
+    });
+
+    const revoked = await client.callTool({
+      name: "micro_user_sessions_revoke",
+      arguments: {
+        path: fixture,
+        user: "11111111-1111-4111-8111-111111111111",
+        confirm: true,
+      },
+    });
+    assert.equal(revoked.isError, false);
+    const revokedOutput = revoked.structuredContent as { json?: unknown };
+    assert.deepEqual(revokedOutput.json, {
+      args: [
+        "users", "revoke-sessions", "11111111-1111-4111-8111-111111111111",
+        "--confirm", "--json",
+      ],
+    });
+
+    const unconfirmed = await client.callTool({
+      name: "micro_user_disable",
+      arguments: {
+        path: fixture,
+        user: "11111111-1111-4111-8111-111111111111",
+        confirm: false,
+      },
+    });
+    assert.equal(unconfirmed.isError, true);
   } finally {
     await client.close();
   }

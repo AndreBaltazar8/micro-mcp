@@ -30,12 +30,20 @@ Mutating tools:
 - `micro_products_sync`: non-destructively synchronize `micro.yaml` products.
 - `micro_file_upload`: upload one explicit public or entitlement-gated object.
 - `micro_rollback`: activate a prior code deployment without mutating persistent project state.
+- `micro_user_disable`: disable one explicit app user and revoke their active access; requires `confirm: true`.
+- `micro_user_enable`: restore sign-in eligibility for one explicit disabled app user.
+- `micro_user_sessions_revoke`: revoke one user's active sessions and private download grants without disabling them; requires `confirm: true`.
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
 
 User, record, and purchase results can contain personal or customer data. Read
 them only for a concrete owner-authorized maintenance task, minimize what enters
 the harness context, and never copy full datasets into a report.
+
+Select an app user from `micro_users`; never guess or accept an unverified user
+ID. Disabling preserves records, purchases, and entitlements but consumes active
+recovery and verification links in addition to revoking sessions and private
+download grants. Enabling does not mint a new session.
 
 No tool accepts passwords, refresh tokens, provider keys, raw sessions, GitHub
 OIDC assertions, or permanent deployment tokens. The GitHub Action performs its

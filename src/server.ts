@@ -297,6 +297,50 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_user_disable",
+    {
+      title: "Disable a Micro app user",
+      description: "Disable one explicit app user while preserving records, purchases, and entitlements. Immediately revokes active sessions, recovery and verification links, and private download grants.",
+      inputSchema: directoryInput.extend({
+        user: z.string().uuid(),
+        confirm: z.literal(true).describe("Explicit confirmation that this app user's access should be disabled"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, user }) =>
+      await invoke(["users", "disable", user, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_user_enable",
+    {
+      title: "Enable a Micro app user",
+      description: "Restore sign-in access for one explicit disabled app user without creating a session.",
+      inputSchema: directoryInput.extend({ user: z.string().uuid() }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, user }) => await invoke(["users", "enable", user, "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_user_sessions_revoke",
+    {
+      title: "Revoke Micro app-user sessions",
+      description: "Revoke every active session and private download grant for one explicit app user without disabling the user.",
+      inputSchema: directoryInput.extend({
+        user: z.string().uuid(),
+        confirm: z.literal(true).describe("Explicit confirmation that this app user's active sessions should be revoked"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path, user }) =>
+      await invoke(["users", "revoke-sessions", user, "--confirm", "--json"], path),
+  );
+
+  server.registerTool(
     "micro_records",
     {
       title: "Inspect Micro records",
