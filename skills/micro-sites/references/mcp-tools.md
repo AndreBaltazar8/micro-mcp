@@ -16,6 +16,7 @@ Read-only tools:
 - `micro_audit`: bounded owner activity for deployments, resources, payments, and automation.
 - `micro_export_manifest`: live export resource counts and page limits.
 - `micro_export_page`: one bounded live page of owner-authorized project data.
+- `micro_retention`: current project-record policy and exact live prune preview.
 - `micro_github_bindings`: active repository, ref, environment, workflow, and immutable identity bindings.
 - `micro_products`: stable project products.
 - `micro_files`: file metadata without protected content.
@@ -36,6 +37,8 @@ Mutating tools:
 - `micro_user_enable`: restore sign-in eligibility for one explicit disabled app user.
 - `micro_user_sessions_revoke`: revoke one user's active sessions and private download grants without disabling them; requires `confirm: true`.
 - `micro_record_delete`: permanently delete one exact record identity and inspected version; requires `confirm: true` and fails on a version race.
+- `micro_retention_set`: replace the inspected keep-forever or finite record policy; requires `confirm: true`.
+- `micro_retention_prune`: permanently prune the exact previewed aged-record count; requires `confirm: true` and `expectedRecords`.
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
 
@@ -60,6 +63,13 @@ than one transactional snapshot; compare the last page totals with the manifest
 and disclose if they changed. Exported users, records, purchases, and audit
 metadata are private customer data—do not paste a complete export into model
 output.
+
+Read `micro_retention` immediately before either retention mutation. For a
+policy change, explain that `recordDays: 0` keeps records forever and finite
+policies allow 30–3650 days; set `automatic: true` only with explicit approval.
+For pruning, pass the fresh `eligible_records` value as `expectedRecords`.
+Never retry a policy/count conflict automatically. Retention cannot prune
+purchases or entitlements.
 
 No tool accepts passwords, refresh tokens, provider keys, raw sessions, GitHub
 OIDC assertions, or permanent deployment tokens. The GitHub Action performs its

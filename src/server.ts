@@ -434,6 +434,62 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_retention",
+    {
+      title: "Inspect Micro record retention",
+      description: "Read the linked project's record-retention policy and exact live prune preview. Purchases and entitlements are excluded from retention.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["retention", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_retention_set",
+    {
+      title: "Set Micro record retention",
+      description: "Set keep-forever or a 30–3650 day project-record policy. Automatic pruning is opt-in; purchases and entitlements are never affected.",
+      inputSchema: directoryInput.extend({
+        recordDays: z.number().int().refine(
+          (value) => value === 0 || (value >= 30 && value <= 3650),
+          "Use 0 or a value from 30 through 3650",
+        ),
+        automatic: z.boolean().default(false),
+        confirm: z.literal(true).describe("Explicit confirmation that this retention policy should replace the inspected policy"),
+      }).refine((value) => !value.automatic || value.recordDays >= 30, {
+        message: "Automatic pruning requires a finite policy",
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, recordDays, automatic }) =>
+      await invoke([
+        "retention", "set", "--record-days", String(recordDays),
+        ...(automatic ? ["--automatic"] : []), "--confirm", "--json",
+      ], path),
+  );
+
+  server.registerTool(
+    "micro_retention_prune",
+    {
+      title: "Prune previewed Micro records",
+      description: "Permanently prune the exact currently previewed count of aged project records. Fails if policy or eligible records changed; never affects purchases or entitlements.",
+      inputSchema: directoryInput.extend({
+        expectedRecords: z.number().int().min(0).max(10000),
+        confirm: z.literal(true).describe("Explicit confirmation that the exact previewed record count should be permanently pruned"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, expectedRecords }) =>
+      await invoke([
+        "retention", "prune", "--expected-records", String(expectedRecords),
+        "--confirm", "--json",
+      ], path),
+  );
+
+  server.registerTool(
     "micro_products",
     {
       title: "List Micro products",

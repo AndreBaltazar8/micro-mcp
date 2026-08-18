@@ -56,6 +56,22 @@ micro export records --limit 100 --offset 0 --json
 Pages are not a transactional snapshot. Compare totals after the final page,
 report changes, and keep customer data out of ordinary harness output.
 
+Project-record retention defaults to keep forever. Inspect the fresh policy and
+preview before proposing a change or prune:
+
+```sh
+micro retention --json
+micro retention set --record-days 90 --automatic --confirm --json
+micro retention prune --expected-records 12 --confirm --json
+```
+
+Use `0` only for keep forever; finite policies allow 30 through 3650 days.
+Automatic pruning is opt-in and runs at most daily. A prune must use the exact
+eligible count from the immediately preceding preview. If the policy or count
+changed, inspect again and obtain fresh confirmation—never retry a conflict
+automatically. This policy only removes aged project records; purchases and
+entitlements are always preserved.
+
 Compare local base revision with remote state. If remote source changed, pull and review it; do not overwrite silently. Build, test, preview, deploy, then check the exact live URL and relevant user journey.
 
 Rollback changes code only:

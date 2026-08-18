@@ -40,6 +40,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Treat the browser SDK as ergonomic code, not as an authority boundary.
 - Keep project and user scope derived from the runner; never accept tenant identity from browser or guest arguments.
 - Keep `micro.yaml` synchronization non-destructive. Omitted resources are not deletions.
+- Treat retention changes and pruning as destructive owner decisions. Require a fresh preview and explicit confirmation; never retry a changed preview automatically.
 - Do not connect local development or previews to production data or live payments.
 - Report exact verification evidence and anything still unverified.
 

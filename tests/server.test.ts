@@ -56,6 +56,9 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_audit",
       "micro_export_manifest",
       "micro_export_page",
+      "micro_retention",
+      "micro_retention_set",
+      "micro_retention_prune",
       "micro_products",
       "micro_products_sync",
       "micro_files",
@@ -199,6 +202,56 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
     assert.deepEqual(exportPageOutput.json, {
       args: ["export", "records", "--limit", "50", "--offset", "100", "--json"],
     });
+
+    const retention = await client.callTool({
+      name: "micro_retention",
+      arguments: { path: fixture },
+    });
+    assert.equal(retention.isError, false);
+    const retentionOutput = retention.structuredContent as { json?: unknown };
+    assert.deepEqual(retentionOutput.json, { args: ["retention", "--json"] });
+
+    const retentionSet = await client.callTool({
+      name: "micro_retention_set",
+      arguments: { path: fixture, recordDays: 90, automatic: true, confirm: true },
+    });
+    assert.equal(retentionSet.isError, false);
+    const retentionSetOutput = retentionSet.structuredContent as { json?: unknown };
+    assert.deepEqual(retentionSetOutput.json, {
+      args: [
+        "retention", "set", "--record-days", "90", "--automatic", "--confirm", "--json",
+      ],
+    });
+
+    const retentionSetUnconfirmed = await client.callTool({
+      name: "micro_retention_set",
+      arguments: { path: fixture, recordDays: 90, automatic: true, confirm: false },
+    });
+    assert.equal(retentionSetUnconfirmed.isError, true);
+
+    const invalidAutomaticRetention = await client.callTool({
+      name: "micro_retention_set",
+      arguments: { path: fixture, recordDays: 0, automatic: true, confirm: true },
+    });
+    assert.equal(invalidAutomaticRetention.isError, true);
+
+    const retentionPrune = await client.callTool({
+      name: "micro_retention_prune",
+      arguments: { path: fixture, expectedRecords: 12, confirm: true },
+    });
+    assert.equal(retentionPrune.isError, false);
+    const retentionPruneOutput = retentionPrune.structuredContent as { json?: unknown };
+    assert.deepEqual(retentionPruneOutput.json, {
+      args: [
+        "retention", "prune", "--expected-records", "12", "--confirm", "--json",
+      ],
+    });
+
+    const retentionPruneUnconfirmed = await client.callTool({
+      name: "micro_retention_prune",
+      arguments: { path: fixture, expectedRecords: 12, confirm: false },
+    });
+    assert.equal(retentionPruneUnconfirmed.isError, true);
   } finally {
     await client.close();
   }
