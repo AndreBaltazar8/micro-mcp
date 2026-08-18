@@ -7,6 +7,8 @@ import test from "node:test";
 import { Client } from "@modelcontextprotocol/client";
 import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
+import { MICRO_MCP_VERSION } from "../src/version.js";
+
 test("publishes bounded tools and invokes the CLI without a shell", async () => {
   const fixture = await mkdtemp(join(tmpdir(), "micro-mcp-test-"));
   const executable = join(fixture, "micro-fixture");
@@ -28,6 +30,7 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
   );
   try {
     await client.connect(transport);
+    assert.equal(client.getServerVersion()?.version, MICRO_MCP_VERSION);
     const listing = await client.listTools();
     const names = listing.tools.map((tool) => tool.name);
     assert.deepEqual(names, [
