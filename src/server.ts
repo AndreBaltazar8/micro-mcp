@@ -84,7 +84,7 @@ async function invokeScheduleSet(
 
 export function buildServer(): McpServer {
   const server = new McpServer(
-    { name: "micro-mcp", version: "0.4.0" },
+    { name: "micro-mcp", version: "0.4.1" },
     {
       capabilities: { tools: {} },
       instructions:
@@ -574,6 +574,18 @@ export function buildServer(): McpServer {
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     },
     async ({ path }) => await invoke(["schedules", "--json"], path),
+  );
+
+  server.registerTool(
+    "micro_emails",
+    {
+      title: "List Micro project email deliveries",
+      description: "List owner-only delivery status and daily quota usage for verified-user project notifications. Message bodies and provider credentials are never returned.",
+      inputSchema: directoryInput,
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    },
+    async ({ path }) => await invoke(["emails", "--json"], path),
   );
 
   server.registerTool(

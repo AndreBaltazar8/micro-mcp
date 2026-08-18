@@ -1,0 +1,6 @@
+{
+  "name": "verified-user-email",
+  "prompt": "After a signed-in customer finishes an export, email them a confirmation from my Micro site.",
+  "mustMention": ["email.send_to_current_user", "authenticated", "emailVerified", "micro emails", "plain text", "quota"],
+  "mustNotContain": ["recipient argument", "arbitrary HTML", "SMTP credential", "scheduled bulk mail"]
+}

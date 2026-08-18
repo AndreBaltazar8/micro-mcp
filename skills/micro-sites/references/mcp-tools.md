@@ -15,6 +15,7 @@ Read-only tools:
 - `micro_domains`: custom domains and DNS proof state.
 - `micro_private_grants`: private-site grant metadata without bearer tokens.
 - `micro_schedules`: durable schedule definitions and latest delivery state.
+- `micro_emails`: owner-only delivery status and daily quota usage without message bodies.
 - `micro_project_deletions`: durable project-deletion receipts, progress, failures, and slug release times.
 - `micro_status`: linked project, resources, usage, and health.
 - `micro_logs`: bounded recent project logs.

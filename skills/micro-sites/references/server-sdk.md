@@ -26,6 +26,13 @@ Data operations are `data.get`, `data.list`, `data.put`, and `data.delete`. Sele
 
 Render private HTML only after checking `request.context.user`. Recheck entitlement or record policy through the platform API for every privileged action; hiding a link is not authorization.
 
+For a user-requested receipt or confirmation, call
+`email.send_to_current_user` through the reviewed `microEmailCurrentUser`
+helper only after checking `authenticated`, `emailVerified`, and the underlying
+record or entitlement. Micro derives the recipient and accepts only an 80-byte
+subject plus a 4,000-byte plain-text message. Read `outbound-email.md`; never
+invent recipient, sender, HTML, URL, attachment, or provider arguments.
+
 Application events such as `purchase.completed` and `schedule.triggered` are
 internal authenticated invocations with stable `x-micro-event-id` values and
 at-least-once delivery. Public requests never reach these runner-owned paths.

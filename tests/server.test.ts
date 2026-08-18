@@ -64,6 +64,7 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_private_grants",
       "micro_private_grant_revoke",
       "micro_schedules",
+      "micro_emails",
       "micro_schedule_set",
       "micro_schedule_run",
       "micro_schedule_remove",
@@ -196,6 +197,7 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       ["private-grants", "revoke", resourceId, "--confirm", "--json"],
     );
     await expectToolArgs("micro_schedules", { path: fixture }, ["schedules", "--json"]);
+    await expectToolArgs("micro_emails", { path: fixture }, ["emails", "--json"]);
     await expectToolArgs(
       "micro_schedule_run",
       { path: fixture, scheduleId: "daily-digest", confirm: true },

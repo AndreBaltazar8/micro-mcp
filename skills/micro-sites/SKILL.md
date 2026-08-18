@@ -1,6 +1,6 @@
 ---
 name: micro-sites
-description: Build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using public assets, Abla WebAssembly server code, app authentication, project data, products, payments, protected files, and schedules. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, scheduled work, remote previews, production deployment, rollback, or GitHub deployment automation.
+description: Build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using public assets, Abla WebAssembly server code, app authentication, project data, products, payments, protected files, schedules, and verified-user email. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, scheduled work, transactional notifications, remote previews, production deployment, rollback, or GitHub deployment automation.
 ---
 
 # Micro Sites
@@ -16,6 +16,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Read [cli-workflow.md](references/cli-workflow.md) for local build, preview, deploy, or secure account handoff.
 - Read [project-operation.md](references/project-operation.md) for teams, invitations, private sites, custom domains, plans, usage caps, or platform billing.
 - Read [schedules.md](references/schedules.md) before adding recurring or manually triggered background work.
+- Read [outbound-email.md](references/outbound-email.md) before adding receipts, confirmations, or user notifications.
 - Read [deployment-and-maintenance.md](references/deployment-and-maintenance.md) for updates, logs, usage, conflicts, GitHub automation, or rollback.
 - Read [security-and-quality.md](references/security-and-quality.md) before implementing auth, money, data, files, or production changes.
 - Read [mcp-tools.md](references/mcp-tools.md) before invoking Micro MCP tools.
@@ -42,6 +43,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Never place an invitation token or private-site bearer token in an MCP argument, model-visible command, log, file, or report. Accept invitations through `--token-stdin`; create private grants only in a secure interactive CLI handoff.
 - Treat every `/_micro/*` route as runner-owned. Public traffic must never reach a guest handler there; only documented runner-originated platform events may invoke a guest event branch, and unknown platform paths fail closed.
 - Keep schedule payloads non-secret and bounded. Treat delivery as at least once, key side effects by `x-micro-event-id`, and never use schedules as a timing-critical queue.
+- Send project mail only with `email.send_to_current_user` after authorizing a user-requested action. Never add recipient, sender, HTML, URL, attachment, or provider fields.
 - Treat the browser SDK as ergonomic code, not as an authority boundary.
 - Keep project and user scope derived from the runner; never accept tenant identity from browser or guest arguments.
 - Keep `micro.yaml` synchronization non-destructive. Omitted resources are not deletions.

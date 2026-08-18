@@ -30,7 +30,7 @@ test("release metadata agrees", async () => {
   assert.equal(serverJson.packages[0].version, packageJson.version);
 });
 
-test("skill evaluations are structured and cover scheduled maintenance", async () => {
+test("skill evaluations are structured and cover durable operations", async () => {
   const directory = resolve("tests/skill-evals");
   const files = (await readdir(directory)).filter((name) => name.endsWith(".json"));
   const evaluations = await Promise.all(files.map(async (name) =>
@@ -43,4 +43,5 @@ test("skill evaluations are structured and cover scheduled maintenance", async (
     assert.equal(Array.isArray(evaluation.mustNotContain), true);
   });
   assert.equal(evaluations.some((evaluation) => evaluation.name === "scheduled-maintenance"), true);
+  assert.equal(evaluations.some((evaluation) => evaluation.name === "verified-user-email"), true);
 });
