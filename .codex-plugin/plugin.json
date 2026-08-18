@@ -1,6 +1,6 @@
 {
   "name": "micro-mcp",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Build, deploy, and maintain full-stack Micro sites through the official skill and local MCP tools.",
   "author": {
     "name": "Andre Baltazar",

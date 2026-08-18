@@ -1,6 +1,6 @@
 {
-  "microMcp": "0.4.6",
-  "microCli": ">=0.7.3 <0.8.0",
+  "microMcp": "0.4.7",
+  "microCli": ">=0.8.0 <0.9.0",
   "runnerAbi": "micro.wasm.v1",
   "browserSdk": "1"
 }
