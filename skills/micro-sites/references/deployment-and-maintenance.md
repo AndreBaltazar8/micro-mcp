@@ -35,6 +35,17 @@ Disablement and session revocation preserve records, purchases, and
 entitlements. Disablement also consumes active recovery and verification links;
 enabling restores sign-in eligibility but does not create a session.
 
+Delete a project record only from a freshly inspected result. Preserve its
+environment, collection, scope, key, and version exactly:
+
+```sh
+micro records --json
+micro records delete production notes project welcome --version 3 --confirm --json
+```
+
+A version conflict means the value changed; inspect it again instead of
+automatically retrying the permanent deletion.
+
 Compare local base revision with remote state. If remote source changed, pull and review it; do not overwrite silently. Build, test, preview, deploy, then check the exact live URL and relevant user journey.
 
 Rollback changes code only:

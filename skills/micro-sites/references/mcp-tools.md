@@ -33,6 +33,7 @@ Mutating tools:
 - `micro_user_disable`: disable one explicit app user and revoke their active access; requires `confirm: true`.
 - `micro_user_enable`: restore sign-in eligibility for one explicit disabled app user.
 - `micro_user_sessions_revoke`: revoke one user's active sessions and private download grants without disabling them; requires `confirm: true`.
+- `micro_record_delete`: permanently delete one exact record identity and inspected version; requires `confirm: true` and fails on a version race.
 
 Inspect `ok`, `exitCode`, `stdout`, `stderr`, and `json`. Treat `isError` or `ok: false` as failure even if diagnostics contain a URL or partial result. Feed exact diagnostics into the repair loop.
 
@@ -44,6 +45,12 @@ Select an app user from `micro_users`; never guess or accept an unverified user
 ID. Disabling preserves records, purchases, and entitlements but consumes active
 recovery and verification links in addition to revoking sessions and private
 download grants. Enabling does not mint a new session.
+
+Select records from `micro_records` immediately before deletion and pass every
+identity field plus the returned version to `micro_record_delete`. Never retry a
+version conflict automatically: inspect the changed value and ask for fresh
+confirmation. Record deletion is permanent and does not cascade to the owning
+app user.
 
 No tool accepts passwords, refresh tokens, provider keys, raw sessions, GitHub
 OIDC assertions, or permanent deployment tokens. The GitHub Action performs its

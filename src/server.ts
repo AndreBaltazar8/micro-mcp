@@ -353,6 +353,32 @@ export function buildServer(): McpServer {
   );
 
   server.registerTool(
+    "micro_record_delete",
+    {
+      title: "Delete an exact Micro record",
+      description: "Permanently delete one exact project record using its environment, collection, scope, key, and inspected version. Fails if the record changed.",
+      inputSchema: directoryInput.extend({
+        environment: z.enum(["preview", "production"]),
+        collection: z.string().regex(/^[a-z0-9._-]{1,48}$/),
+        scope: z.union([
+          z.literal("project"),
+          z.string().regex(/^user:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/),
+        ]),
+        key: z.string().regex(/^[a-z0-9._-]{1,128}$/),
+        version: z.number().int().positive().max(2147483647),
+        confirm: z.literal(true).describe("Explicit confirmation that this exact record version should be permanently deleted"),
+      }),
+      outputSchema: cliOutput,
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
+    },
+    async ({ path, environment, collection, scope, key, version }) =>
+      await invoke([
+        "records", "delete", environment, collection, scope, key,
+        "--version", String(version), "--confirm", "--json",
+      ], path),
+  );
+
+  server.registerTool(
     "micro_purchases",
     {
       title: "Inspect Micro purchases",

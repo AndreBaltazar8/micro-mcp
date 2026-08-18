@@ -51,6 +51,7 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       "micro_user_enable",
       "micro_user_sessions_revoke",
       "micro_records",
+      "micro_record_delete",
       "micro_purchases",
       "micro_audit",
       "micro_products",
@@ -143,6 +144,41 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
       },
     });
     assert.equal(unconfirmed.isError, true);
+
+    const recordDeleted = await client.callTool({
+      name: "micro_record_delete",
+      arguments: {
+        path: fixture,
+        environment: "production",
+        collection: "notes",
+        scope: "project",
+        key: "welcome",
+        version: 3,
+        confirm: true,
+      },
+    });
+    assert.equal(recordDeleted.isError, false);
+    const recordDeletedOutput = recordDeleted.structuredContent as { json?: unknown };
+    assert.deepEqual(recordDeletedOutput.json, {
+      args: [
+        "records", "delete", "production", "notes", "project", "welcome",
+        "--version", "3", "--confirm", "--json",
+      ],
+    });
+
+    const recordUnconfirmed = await client.callTool({
+      name: "micro_record_delete",
+      arguments: {
+        path: fixture,
+        environment: "production",
+        collection: "notes",
+        scope: "project",
+        key: "welcome",
+        version: 3,
+        confirm: false,
+      },
+    });
+    assert.equal(recordUnconfirmed.isError, true);
   } finally {
     await client.close();
   }
