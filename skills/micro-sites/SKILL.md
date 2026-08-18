@@ -1,6 +1,6 @@
 ---
 name: micro-sites
-description: Browse, remix, build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using curated licensed source, public assets, Abla WebAssembly server code, app authentication, project data, products, payments, protected files, schedules, verified-user email, and public platform status. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, gallery starters, scheduled work, transactional notifications, incident diagnosis, remote previews, production deployment, rollback, or GitHub deployment automation.
+description: Browse, remix, build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using curated licensed source, public assets, Abla WebAssembly server code, project-scoped Login with Micro and app authentication, project data, products, payments, protected files, schedules, verified-user email, and public platform status. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, gallery starters, scheduled work, transactional notifications, incident diagnosis, remote previews, production deployment, rollback, or GitHub deployment automation.
 ---
 
 # Micro Sites
@@ -43,6 +43,9 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 - Never describe remix as cloning a project. It creates only a fresh local source tree, removes the source `micro.yaml` slug, and neither creates nor reserves anything remotely.
 - Never put protected or paid files under `public/`.
 - Never expose owner sessions, app-session cookies, database credentials, provider secrets, payment IDs, storage paths, or deployment tokens to site code.
+- Implement first-party identity only with `Micro.auth.loginWithMicro()`. Never
+  reproduce its consent/callback routes, reuse dashboard cookies as app
+  sessions, or imply that the resulting project cookie grants dashboard access.
 - Never place an invitation token or private-site bearer token in an MCP argument, model-visible command, log, file, or report. Accept invitations through `--token-stdin`; create private grants only in a secure interactive CLI handoff.
 - Treat every `/_micro/*` route as runner-owned. Public traffic must never reach a guest handler there; only documented runner-originated platform events may invoke a guest event branch, and unknown platform paths fail closed.
 - Keep schedule payloads non-secret and bounded. Treat delivery as at least once, key side effects by `x-micro-event-id`, and never use schedules as a timing-critical queue.

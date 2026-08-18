@@ -46,4 +46,5 @@ test("skill evaluations are structured and cover durable operations", async () =
   assert.equal(evaluations.some((evaluation) => evaluation.name === "verified-user-email"), true);
   assert.equal(evaluations.some((evaluation) => evaluation.name === "platform-incident-diagnosis"), true);
   assert.equal(evaluations.some((evaluation) => evaluation.name === "curated-gallery-remix"), true);
+  assert.equal(evaluations.some((evaluation) => evaluation.name === "login-with-micro"), true);
 });

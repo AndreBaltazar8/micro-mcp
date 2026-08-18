@@ -1,0 +1,6 @@
+{
+  "name": "login-with-micro",
+  "prompt": "Add Login with Micro to a member library and explain what access the resulting session has.",
+  "mustMention": ["Micro.auth.loginWithMicro", "project-local app user", "host-only app cookie", "no dashboard authority", "Micro.currentUser"],
+  "mustNotContain": ["client secret", "custom OAuth callback", "shared dashboard cookie"]
+}

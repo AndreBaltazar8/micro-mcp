@@ -3,6 +3,9 @@
 Check these boundaries:
 
 - Owner identity belongs only to the control-plane host; app identity belongs only to the resolved project host.
+- Login with Micro consumes a one-time, project-bound exchange into a new app
+  session. It never copies owner tokens or grants dashboard authority to the
+  project cookie.
 - Every mutation enforces exact same-origin or an equivalent CSRF proof.
 - The runner, not browser or Wasm input, derives project, environment, app user, product, purchase, and object scope.
 - Wasm has one allowlisted platform import plus fuel, wall-time, memory, response, host-call, database-operation, and concurrency limits.
