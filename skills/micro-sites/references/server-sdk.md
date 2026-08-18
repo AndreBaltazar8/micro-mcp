@@ -24,7 +24,29 @@ Use the typed server helpers from the reviewed Abla example. They call the sole 
 
 Data operations are `data.get`, `data.list`, `data.put`, and `data.delete`. Select `scope: "user"` for the authenticated user or `scope: "project"` for shared records. Check operation envelopes before using their records. Use optimistic versions for concurrent writes.
 
-Render private HTML only after checking `request.context.user`. Recheck entitlement or record policy through the platform API for every privileged action; hiding a link is not authorization.
+Render private HTML only after checking `request.context.user`. Use Abla's
+`$html` tree and the reviewed example's `microHtmlResponse` helper so literal
+and interpolated text is escaped before the runner injects the browser SDK:
+
+```abla
+fun libraryPage(request: MicroRequest): Html {
+    val user = request.context.user
+    if (user.authenticated)
+        return $html <main><h1>Welcome, {user.email}.</h1></main>
+    $html <main><h1>Sign in to continue.</h1></main>
+}
+
+if (request.method == "GET" && request.path == "/library")
+    return microHtmlResponse(200, libraryPage(request))
+```
+
+Copy the current renderer and response helper from
+[`digital-product/micro.ab`](https://github.com/microdotdo/micro-examples/blob/main/digital-product/micro.ab),
+and keep application routing in
+[`digital-product/handler.ab`](https://github.com/microdotdo/micro-examples/blob/main/digital-product/handler.ab).
+Do not interpolate authenticated values into raw HTML strings. Recheck
+entitlement or record policy through the platform API for every privileged
+action; hiding a link is not authorization.
 
 For a user-requested receipt or confirmation, call
 `email.send_to_current_user` through the reviewed `microEmailCurrentUser`

@@ -17,7 +17,9 @@ Only `app.ab` or `public/` is required. `micro.yaml` is optional and contains st
 Choose one delivery shape:
 
 - Static shell plus server: serve `public/index.html`; call server or platform routes from browser code.
-- Server-rendered: return `text/html` from `app.ab`, preferably using Abla's typed `$html` subparser.
+- Server-rendered: build an Abla `$html` tree and return it through the reviewed
+  `microHtmlResponse` helper; read `server-sdk.md` for the exact escaping and
+  authenticated-context pattern.
 - Static `$html` extraction: use the supported build-time HTML entry when the installed compiler exposes it.
 - API-only: omit the index and expose only Wasm routes.
 

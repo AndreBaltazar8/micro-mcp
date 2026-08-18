@@ -84,7 +84,7 @@ async function invokeScheduleSet(
 
 export function buildServer(): McpServer {
   const server = new McpServer(
-    { name: "micro-mcp", version: "0.4.4" },
+    { name: "micro-mcp", version: "0.4.5" },
     {
       capabilities: { tools: {} },
       instructions:
