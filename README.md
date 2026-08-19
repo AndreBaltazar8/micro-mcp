@@ -11,12 +11,28 @@ locally and delegates deployment to the authenticated Micro CLI.
 
 ### Codex
 
+Install the skill globally:
+
+```sh
+npx skills add microdotdo/micro-mcp --skill micro-sites -g -a codex -y
+```
+
+Add the local MCP tools:
+
 ```sh
 codex mcp add micro -- npx -y @microdotdo/micro-mcp
 codex mcp list
 ```
 
 ### Claude Code
+
+Install the skill globally:
+
+```sh
+npx skills add microdotdo/micro-mcp --skill micro-sites -g -a claude-code -y
+```
+
+Add the local MCP tools:
 
 ```sh
 claude mcp add --transport stdio --scope user micro -- npx -y @microdotdo/micro-mcp
@@ -25,7 +41,13 @@ claude mcp list
 
 ### Cursor
 
-Save this as `~/.cursor/mcp.json` for a global installation:
+Install the skill globally:
+
+```sh
+npx skills add microdotdo/micro-mcp --skill micro-sites -g -a cursor -y
+```
+
+For the local MCP tools, save this as `~/.cursor/mcp.json`:
 
 ```json
 {
@@ -46,6 +68,12 @@ with this package so Pi can follow the same Micro CLI workflow:
 
 ```sh
 pi install npm:@microdotdo/micro-mcp
+```
+
+Or install only the skill:
+
+```sh
+npx skills add microdotdo/micro-mcp --skill micro-sites -g -a pi -y
 ```
 
 Install a compatible `micro` executable first and authenticate interactively. Set `MICRO_CLI` only when the executable is not on `PATH`; it must be an executable path, never a shell command.
