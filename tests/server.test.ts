@@ -117,6 +117,7 @@ test("publishes bounded tools and invokes the CLI without a shell", async () => 
     };
 
     const resourceId = "11111111-1111-4111-8111-111111111111";
+    await expectToolArgs("micro_doctor", {}, ["doctor", "--json"]);
     await expectToolArgs("micro_plans", {}, ["plans", "--json"]);
     await expectToolArgs("micro_usage", {}, ["usage", "--json"]);
     await expectToolArgs(

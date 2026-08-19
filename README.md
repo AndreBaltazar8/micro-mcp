@@ -6,6 +6,13 @@ Micro does not receive prompts or call a model. The skill runs in the creator's 
 
 ## Install
 
+Install the complete Micro toolchain first:
+
+```sh
+curl -fsSL https://micro.do/install | sh
+micro doctor
+```
+
 Use the setup for your coding harness. Each command runs the bundled stdio server
 locally and delegates deployment to the authenticated Micro CLI.
 
@@ -76,7 +83,7 @@ Or install only the skill:
 npx skills add microdotdo/micro-mcp --skill micro-sites -g -a pi -y
 ```
 
-Install a compatible `micro` executable first and authenticate interactively. Set `MICRO_CLI` only when the executable is not on `PATH`; it must be an executable path, never a shell command.
+Authenticate interactively after installation. Set `MICRO_CLI` only when the executable is not on `PATH`; it must be an executable path, never a shell command.
 
 For repository deployment, use `micro_github_link` once from an authenticated
 owner workstation, commit the generated non-secret `micro.github.json`, and

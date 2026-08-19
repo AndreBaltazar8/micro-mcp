@@ -5,7 +5,7 @@ Use typed tools when installed; use the same CLI commands directly otherwise.
 Read-only tools:
 
 - `micro_gallery`: public reviewed gallery metadata and immutable source provenance.
-- `micro_doctor`: CLI version and owner account status.
+- `micro_doctor`: CLI, compiler, runner, platform, owner account, and local-project readiness.
 - `micro_plans`: public plan catalog and allowances.
 - `micro_usage`: authenticated plan, usage, and spending-cap state.
 - `micro_billing`: authenticated subscription state without payment credentials.

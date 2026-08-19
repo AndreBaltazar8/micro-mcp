@@ -97,22 +97,13 @@ export function buildServer(): McpServer {
   server.registerTool(
     "micro_doctor",
     {
-      title: "Check Micro CLI compatibility",
-      description: "Check the installed Micro CLI version and authenticated owner status.",
+      title: "Check Micro readiness",
+      description: "Check the installed CLI, compiler, runner, platform, owner account, and local project.",
       inputSchema: z.object({}),
       outputSchema: cliOutput,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true },
     },
-    async () => {
-      const version = await runMicro(["--version"]);
-      if (!version.ok) return result(version);
-      const account = await runMicro(["account", "status", "--json"]);
-      return result({
-        ...account,
-        stdout: JSON.stringify({ version: version.stdout, account: account.json ?? account.stdout }),
-        json: { version: version.stdout, account: account.json ?? account.stdout },
-      });
-    },
+    async () => await runMicro(["doctor", "--json"]).then(result),
   );
 
   server.registerTool(
