@@ -1,9 +1,29 @@
 # CLI workflow
 
-Check compatibility first:
+Install only the local capabilities required by the project on Linux:
+
+```sh
+# Static sites, deployment, or an existing Wasm build
+curl -fsSL https://micro.do/install | sh -s -- cli
+
+# Add local preview while keeping the project's own compiler
+curl -fsSL https://micro.do/install | sh -s -- runtime
+
+# Complete self-contained Abla build and preview toolchain
+curl -fsSL https://micro.do/install | sh -s -- abla
+```
+
+Homebrew provides the complete Micro + Abla setup on macOS:
+
+```sh
+brew install microdotdo/tap/micro
+```
+
+Check compatibility and project-specific optional requirements:
 
 ```sh
 micro --version
+micro doctor --json
 micro account status --json
 ```
 

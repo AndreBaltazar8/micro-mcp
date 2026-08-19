@@ -6,12 +6,18 @@ Micro does not receive prompts or call a model. The skill runs in the creator's 
 
 ## Install
 
-Install the complete Micro toolchain first:
+Install the Micro capabilities the project needs on Linux:
 
 ```sh
-curl -fsSL https://micro.do/install | sh
+curl -fsSL https://micro.do/install | sh -s -- cli      # CLI only
+curl -fsSL https://micro.do/install | sh -s -- runtime  # + local runner
+curl -fsSL https://micro.do/install | sh -s -- abla     # + Abla toolchain
 micro doctor
 ```
+
+Static sites and Wasm produced by Rust or another compatible toolchain do not
+require Abla. On macOS, `brew install microdotdo/tap/micro` provides the
+complete managed setup.
 
 Use the setup for your coding harness. Each command runs the bundled stdio server
 locally and delegates deployment to the authenticated Micro CLI.

@@ -1,6 +1,6 @@
 ---
 name: micro-sites
-description: Browse, remix, build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using curated licensed source, public assets, Abla WebAssembly server code, project-scoped Login with Micro and app authentication, project data, products, payments, protected files, schedules, verified-user email, and public platform status. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.yaml, Micro browser SDK calls, Micro platform host APIs, gallery starters, scheduled work, transactional notifications, incident diagnosis, remote previews, production deployment, rollback, or GitHub deployment automation.
+description: Browse, remix, build, redesign, debug, preview, deploy, and maintain small full-stack sites on Micro using static assets or compatible WebAssembly built with Abla, Rust, or another suitable toolchain; project-scoped Login with Micro and app authentication; project data, products, payments, protected files, schedules, verified-user email, and public platform status. Use for new or existing Micro projects; requests involving micro.do, micro-cli, app.ab, micro.wasm.v1, micro.yaml, Micro browser SDK calls, Micro platform host APIs, gallery starters, scheduled work, transactional notifications, incident diagnosis, remote previews, production deployment, rollback, or GitHub deployment automation.
 ---
 
 # Micro Sites
@@ -10,6 +10,7 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 ## Load only the relevant references
 
 - Read [project-layout.md](references/project-layout.md) before creating or restructuring source.
+- Read [server-toolchains.md](references/server-toolchains.md) before selecting or changing a server language or build pipeline.
 - Read [gallery-and-remix.md](references/gallery-and-remix.md) before selecting or remixing a curated starting point.
 - Read [browser-sdk.md](references/browser-sdk.md) for browser auth, data, checkout, invocation, or downloads.
 - Read [server-sdk.md](references/server-sdk.md) for Abla handlers, SSR, request context, data, purchases, or events.
@@ -28,9 +29,9 @@ Turn a focused site idea into reviewed source and a verified live Micro. Keep ge
 
 1. Discover the audience, desired outcome, public pages, authenticated journeys, server actions, records, products, and files. Ask only for missing choices that materially change the result.
 2. Inspect the existing project, browse the public gallery, or scaffold the conventional source tree. Select one closest reviewed starter; do not combine several. Preserve remix provenance and inspect its license and copy policy before changing source.
-3. Write a short implementation lock: page structure, visual direction, static versus `$html` rendering, Wasm routes, SDK calls, platform resources, and acceptance checks.
-4. Implement the smallest complete journey. Keep public files under `public/`, server code in `app.ab`, and optional stable resource definitions in `micro.yaml`.
-5. Run formatting, `micro build`, automated checks, `micro dev`, and real browser review. Exercise every important route, responsive layout, keyboard path, auth state, and failure state.
+3. Select the smallest suitable delivery shape and record it in the implementation lock: static assets, Abla, Rust, or an existing compatible Wasm toolchain. Do not add a compiler to a static site. Prefer the project's established language when it can satisfy `micro.wasm.v1`; use Abla when its typed platform helpers or `$html` materially simplify the journey.
+4. Implement the smallest complete journey. Keep public files under `public/`, place server source according to the chosen toolchain, write its output to `.micro/build/app.wasm`, and keep optional stable resource definitions in `micro.yaml`.
+5. Run the selected toolchain's formatting and tests, `micro build`, automated checks, `micro dev` when the optional runner is installed, and real browser review. Exercise every important route, responsive layout, keyboard path, auth state, and failure state.
 6. Run `micro deploy --preview`. Inspect the returned diagnostics and preview; repair the actual failure and repeat the relevant checks.
 7. If owner authentication is required, use hidden interactive CLI input or pause for a secure user handoff. Never request, echo, store, or pass a password through an MCP tool or model-visible argument.
 8. Deploy production only after review. Confirm the live URL, TLS, assets, Wasm routes, auth, records, products, purchases, and protected downloads that apply.
